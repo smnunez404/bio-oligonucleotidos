@@ -121,6 +121,22 @@ def _assign_percentiles(results: list["ThermoResult"]) -> None:
             r.accessibility_percentile = p
 
 
+def tm_rna_oriented(candidate: OligoCandidate) -> float:
+    """Tm con la orientación que documenta Biopython (la hebra de ARN).
+
+    Es la versión CORRECTA de lo que hoy calcula `analyze_candidate`. No está
+    cableada al pipeline a propósito: activarla cambia el conjunto de candidatos
+    de entrada de todos los módulos siguientes. Ver el comentario de CRIT-4.
+
+    Para activarla hay que reemplazar en `analyze_candidate`:
+        tm = mt.Tm_NN(aso, nn_table=mt.R_DNA_NN1)
+    por:
+        tm = tm_rna_oriented(candidate)
+    y regenerar todos los resultados de `data/results/`.
+    """
+    return mt.Tm_NN(_to_rna(candidate.target_window), nn_table=mt.R_DNA_NN1)
+
+
 def analyze_candidate(
     candidate: OligoCandidate,
     unpaired: object | None = None,
@@ -131,6 +147,33 @@ def analyze_candidate(
     target_rna = _to_rna(candidate.target_window)
 
     # 1. Tm del dúplex ASO:ARN (proxy híbrido ARN/ADN — ver limitación arriba).
+    #
+    # ⚠️ BUG CONOCIDO Y NO CORREGIDO — CRIT-4 de la revisión adversarial.
+    #
+    # Biopython documenta, para `R_DNA_NN1`: "For RNA/DNA hybridizations seq must
+    # be the RNA sequence". Acá se pasa `aso` (la hebra ASO), teniendo
+    # `target_rna` ya calculada dos líneas más arriba. La tabla es ASIMÉTRICA
+    # (AA/TT = (-7.8, -21.9) vs TT/AA = (-11.5, -36.4)), así que el orden cambia
+    # el número: no es una diferencia cosmética.
+    #
+    # IMPACTO MEDIDO (verificado el 2026-08-01): usar `target_rna` en vez de
+    # `aso` mueve el embudo del Módulo 4 de **44 a 16 candidatos**, con solo 6 en
+    # común. `cand_5882` -- uno de los 3 del frente de Pareto final -- pasa de
+    # 51,40 °C a 37,98 °C y quedaría fuera de rango.
+    #
+    # POR QUÉ NO SE CORRIGIÓ TODAVÍA: corregirlo no es voltear un argumento, es
+    # rehacer el análisis completo (módulos 5, 6b, 6c y 7 corren sobre otro
+    # conjunto de entrada). Y hay una pregunta previa sin resolver: este gate
+    # absoluto de 50-65 °C descansa sobre DOS supuestos que no aplican a un PMO
+    # -- no hay tablas nearest-neighbor para esqueleto neutro, y la corrección
+    # salina de Biopython supone un esqueleto cargado. Antes de rehacer el
+    # análisis hay que decidir si el gate debe existir para esta química o si Tm
+    # debe pasar a percentil relativo, como ya se hizo con accesibilidad y
+    # homodímero. Esa decisión es de los autores, no del código.
+    #
+    # `tm_rna_oriented()` de abajo implementa la versión correcta; el test
+    # `test_crit4_bug_de_orientacion_sigue_presente_y_medido` fija el impacto
+    # para que no se pierda de vista.
     tm = mt.Tm_NN(aso, nn_table=mt.R_DNA_NN1)
 
     # 2. Hibridación ASO:diana.
