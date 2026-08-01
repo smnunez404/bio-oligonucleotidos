@@ -1,230 +1,257 @@
-# Diseño in silico de un ASO (química PMO) para la variante ABCA4 c.161-395G>A
+# In silico design of antisense oligonucleotides for ABCA4 c.161-395G>A
 
-Pipeline computacional para diseñar candidatos a oligonucleótido antisentido que
-corrijan un error de splicing causado por la variante intrónica profunda
-**ABCA4 c.161-395G>A**, asociada a **enfermedad de Stargardt tipo 1 (STGD1)**.
+[![tests](https://img.shields.io/badge/tests-221%20passing-brightgreen)](#tests)
+[![status](https://img.shields.io/badge/status-research%20prototype-orange)](#-what-this-is-not)
+[![experimental validation](https://img.shields.io/badge/experimental%20validation-none-red)](#-what-this-is-not)
 
-> **Estado: investigación en curso, resultados NO validados experimentalmente.**
-> Todo lo que produce este repo son predicciones computacionales. Ningún candidato
-> se midió en célula. Las limitaciones de cada módulo están declaradas en el código,
-> en los ADR del vault y en la sección [Limitaciones](#limitaciones) de acá abajo.
+A reproducible computational pipeline that designs candidate **antisense oligonucleotides (ASOs)**,
+**PMO chemistry**, to block the aberrant pseudoexon caused by the deep-intronic variant
+**ABCA4 c.161-395G>A** — a cause of Stargardt disease type 1.
 
----
-
-## La hipótesis, en una analogía
-
-Un gen es un texto con párrafos útiles (**exones**) separados por relleno
-(**intrones**) que la célula recorta antes de leer. La maquinaria que recorta busca
-marcas de "acá empieza" y "acá termina".
-
-La variante c.161-395G>A cambia **una sola letra** en medio del relleno del intrón 2,
-y eso alcanza para crear una marca nueva donde no había ninguna. La maquinaria se
-confunde, conserva un trozo de relleno de **91 pb** (un **pseudoexón**) y el texto
-resultante queda corrido: la proteína sale mal.
-
-La estrategia del **ASO** es pegar un parche de ~20 letras encima de la marca falsa
-para que la maquinaria no la vea y vuelva a cortar bien. Este repo busca **dónde
-pegar el parche**.
+> 🇪🇸 **[Versión en español →](README.es.md)**
 
 ---
 
-## Los tres entornos, y por qué son tres
+## ⚠️ What this is *not*
 
-**Esto es lo primero que hay que entender para reproducir cualquier resultado.**
-Los dos predictores de splicing usan frameworks que no conviven (TensorFlow vs
-PyTorch, con conflictos de OpenMP y de numpy), y la termodinámica necesita una
-librería C aparte.
+Please read this before anything else.
 
-| entorno | qué corre | dependencia dura |
+- **No ASO has been synthesised or tested.** Every result here is a computational prediction.
+- **The pipeline has known defects.** An adversarial review panel of 6 independent reviewers found
+  7 critical issues; its verdict was *"reject with invitation to major resubmission"*. They are
+  listed openly under [Known issues](#known-issues-from-adversarial-review).
+- **This is not medical advice** and not a therapeutic recommendation.
+
+The project's guiding rule is that **every claim declares its evidence level in the same place the
+claim is made** — never in a footnote.
+
+---
+
+## The biological problem, in one paragraph
+
+Stargardt disease type 1 is the most common inherited macular dystrophy, caused by biallelic
+variants in **ABCA4**. Some pathogenic alleles are not classic coding variants but **deep-intronic**
+ones that activate cryptic splice sites, leading the spliceosome to treat an intronic stretch as an
+exon — a **pseudoexon** — introducing a premature stop codon.
+
+Splice-switching ASOs bind the pre-mRNA by base complementarity and **sterically block** access to a
+splice site without degrading the transcript. Applied to a pseudoexon, they can in principle restore
+normal splicing.
+
+No published or patented ASO targets this specific variant. That gap motivates the work — but it
+also means **there is no positive control** with which to validate the pipeline end to end.
+
+---
+
+## Pipeline
+
+| # | Module | Question it answers | Result (default parameters) |
+|---|---|---|---|
+| 1 | `sequence.py` | Where exactly is the variant? | Coordinate confirmed via two independent routes |
+| 2 | `oligo_walk.py` | Which windows could be targeted? | **381** candidates |
+| 3 | `heuristic_filters.py` | Which are viable oligos (GC%, G-runs)? | 381 → **276** |
+| 4 | `thermodynamics.py` | Which bind well and reach the target? | 276 → **44** ⚠️ *see known issues* |
+| 5 | `off_target.py` | Which resemble other human genes? | 44 annotated by severity |
+| 6 | `splice_neural.py` | Does the variant really create a false site? | Cryptic donor +1, acceptor −89 → 91 bp |
+| 6b | `aso_masking.py` | Does each patch switch the false site off? | **10** abolish the pseudoexon |
+| 7 | `ranking.py` | Which are worth synthesising first? | Pareto front: **3** candidates |
+
+### Strongest result
+
+The predicted pseudoexon measures **91 bp**, matching *exactly* the PE1b measured by minigene assay
+in Peng et al. (IOVS 2025) — two fully independent methods converging on the same number. This is
+the claim that survived adversarial review untouched.
+
+### Three predictors, one of them tissue-correct
+
+| Predictor | Trained on | Verdict (abolish / no effect / harms) |
 |---|---|---|
-| `bio-oligo` | Módulos 1-5 y 7, backend, figuras, tests | ViennaRNA 2.7.2 + BLAST+ 2.17.0 (conda) |
-| `spliceai` | Módulos 6 y 6b con SpliceAI | TensorFlow 2.21, `setuptools==75.8.0` |
-| `pangolin` | Módulos 6c y 6b con Pangolin | PyTorch 2.13, `KMP_AFFINITY=disabled` |
+| SpliceAI (Illumina) | tissue-agnostic | 10 / 34 / 0 |
+| Pangolin (U. Penn) | 4 tissues, no retina | 10 / 34 / 0 |
+| **Retina-SpliceAI** (Radboud UMC) | **503 human retina samples** | **10 / 34 / 0** |
 
-El entorno `spliceai` corre **tres juegos de pesos** con la misma arquitectura SpliceAI-10k
-(`pipeline.splice_neural.WEIGHT_SETS`):
+All three select the **same exact set** of 10 candidates. See
+[Known issues](#known-issues-from-adversarial-review) for why this agreement is weaker evidence than
+it appears.
 
-| `--predictor` | pesos | tejido |
+---
+
+## Quick start
+
+### Requirements
+
+Three **non-interchangeable** environments. The two neural predictors use frameworks that conflict
+(TensorFlow vs PyTorch, over OpenMP and numpy), and the thermodynamics needs a separate compiled C
+library.
+
+| Environment | Runs | Hard dependency |
 |---|---|---|
-| `spliceai` | Illumina, dentro del paquete `spliceai` | ninguno (agnóstico) |
-| `retina` | [Retina-SpliceAI](https://github.com/cmbi/Retina-SpliceAI), 503 muestras de retina humana | **retina** |
-| `gtex` | mismo trabajo, entrenado en GTEx | control sin retina |
-
-Los pesos de `retina`/`gtex` (87 MB) no están en git: se copian desde el repo de origen a
-`data/reference/retina_spliceai/models/`. El juego `gtex` existe para **aislar el efecto del
-tejido**: comparar retina contra el SpliceAI original mezclaría tejido y procedimiento de
-entrenamiento.
+| `bio-oligo` | Modules 1–5, 7, backend, tests | ViennaRNA 2.7.2 + BLAST+ 2.17.0 (conda) |
+| `spliceai` | Modules 6, 6b | TensorFlow 2.21, `setuptools==75.8.0` |
+| `pangolin` | Modules 6c, 6b | PyTorch 2.13, `KMP_AFFINITY=disabled` |
 
 ```bash
-# entorno por defecto
 conda create -n bio-oligo python=3.11
 conda install -n bio-oligo -c conda-forge -c bioconda viennarna blast
 conda run -n bio-oligo pip install -r requirements/bio-oligo.txt
 
-# predictores (uno cada uno, no en el mismo entorno)
 conda create -n spliceai python=3.11 && conda run -n spliceai pip install -r requirements/spliceai.txt
 conda create -n pangolin python=3.11 && conda run -n pangolin pip install -r requirements/pangolin.txt
 ```
 
-### `scripts/run-in-env.sh` — para no depender de haber activado el entorno
+The `spliceai` environment also runs two extra weight sets sharing the SpliceAI-10k architecture —
+`retina` and `gtex`, from [Retina-SpliceAI](https://github.com/cmbi/Retina-SpliceAI) (GPL-3.0),
+copied into `data/reference/retina_spliceai/models/`. The `gtex` set is the control that isolates
+the **tissue** effect: comparing retina against the original SpliceAI would confound tissue with
+training procedure.
 
-Cualquier comando del proyecto se puede correr con:
+### Running anything
+
+`scripts/run-in-env.sh` locates the environment (via `BIO_OLIGO_ENV`, conda, micromamba, or the
+usual paths) and exports `PATH`, `PYTHONPATH` and `KMP_AFFINITY`:
 
 ```bash
 scripts/run-in-env.sh python -m pytest tests/ -q
-scripts/run-in-env.sh python pipeline/run_modulo7_inputs.py
+scripts/run-in-env.sh python pipeline/run_calibration.py --predictor retina
 scripts/run-in-env.sh blastn -version
 ```
 
-Busca el entorno `bio-oligo` por `BIO_OLIGO_ENV`, `conda`, `micromamba` y las rutas
-habituales, y exporta `PATH`, `PYTHONPATH` y `KMP_AFFINITY`. `.claude/launch.json`
-lo usa para el backend.
+**Why the wrapper matters:** having the right interpreter is not enough. Module 5 looks for `blastn`
+through `shutil.which`, so a Python with all dependencies but without the environment's `PATH` makes
+`/api/off-target` return 503 **even when BLAST is installed**. That exact misdiagnosis happened
+during development and cost a full module.
 
-**Por qué hace falta:** no alcanza con tener el intérprete correcto. El Módulo 5
-busca `blastn` con `shutil.which`, así que un `python` con las dependencias pero sin
-el `PATH` del entorno hace que `/api/off-target` devuelva 503 **aunque BLAST esté
-instalado**. Ese error de diagnóstico ya pasó (2026-07-31) y costó dar por ausente
-un binario que estaba ahí.
-
-### `scripts/lint_vault.py` — revisa el vault de Obsidian
+### Web platform
 
 ```bash
+scripts/run-in-env.sh python -m uvicorn backend.main:app --port 8000 --reload
+npm --prefix frontend run dev     # http://localhost:5173
+```
+
+Ten tabs — one per module plus an explanatory view built from real data. Every tab displays its own
+limitations permanently on screen, not hidden behind a tooltip.
+
+---
+
+## Two traps that silently ruin a run
+
+1. **`KMP_AFFINITY=disabled` is mandatory for Pangolin.** Without it, importing `torch` aborts with
+   an OpenMP error that never mentions the cause.
+2. **Pangolin only scores the *central* bases**, discarding 5000 nt of context per side. With a
+   10 kb region it returns **a single point**, without warning. All runs use `padding >= 6000`.
+
+---
+
+## Reproducibility
+
+Every result in `data/results/` has a regeneration command. `data/reference/` (~490 MB: indexed
+transcriptome and predictor weights) is **not** versioned — see `data/reference/README.md`.
+
+```bash
+# Module 6b masking, per predictor
+scripts/run-in-env.sh python pipeline/run_masking.py --predictor {spliceai|pangolin|retina|gtex}
+
+# Module 7 inputs (reproduces the published CSV byte for byte)
+scripts/run-in-env.sh python pipeline/run_modulo7_inputs.py
+
+# Calibration against AONs with published efficacy
+scripts/run-in-env.sh python pipeline/run_calibration.py --predictor spliceai
+
+# Documentation vault integrity
 python3 scripts/lint_vault.py
 ```
 
-Enlaces rotos, páginas huérfanas y fuentes de `raw/` sin ficha. Ignora los `[[...]]`
-que están dentro de bloques o spans de código, porque Obsidian tampoco los
-interpreta — un chequeo ingenuo marca como roto el ejemplo de la propia convención
-en `AGENTS.md` y enseña a desconfiar del lint.
-
-### Dos trampas que arruinan una corrida sin avisar
-
-1. **`KMP_AFFINITY=disabled` es obligatorio para Pangolin.** Sin esa variable,
-   importar `torch` aborta con un error de OpenMP que no menciona la causa.
-   `pipeline/pangolin_cross.require_affinity_disabled()` lo verifica y falla con
-   mensaje claro.
-2. **Pangolin solo puntúa las bases centrales.** Descuenta 5000 nt de contexto a
-   cada lado y devuelve `len(seq) - 10000` scores. Con una región de 10.001 nt
-   devolvería **un solo punto**, sin error. De ahí que las corridas usen
-   `padding >= 6000`. Hay un test que verifica exactamente eso.
-
----
-
-## Los módulos
-
-| # | qué hace | entorno | ADR |
-|---|---|---|---|
-| 1 | Trae la región del intrón 2 de Ensembl y confirma la coordenada de la variante | `bio-oligo` | — |
-| 2 | Barrido de ventanas de 20 nt (paso 1) sobre la región candidata | `bio-oligo` | 0001 |
-| 3 | Filtros heurísticos (GC, corridas de G, complejidad) | `bio-oligo` | 0001 |
-| 4 | Termodinámica: accesibilidad del ARN blanco (ViennaRNA) | `bio-oligo` | 0004 |
-| 5 | Off-target: BLAST+ contra el transcriptoma humano, con severidad graduada | `bio-oligo` | 0005, 0006 |
-| 6 | Validación neural del splicing con SpliceAI | `spliceai` | 0003, 0007 |
-| 6b | Simulación del bloqueo del ASO por enmascarado con N | `spliceai` + `pangolin` | 0008, 0010 |
-| 6c | Validación cruzada con Pangolin (segundo predictor independiente) | `pangolin` | 0009 |
-| 7 | Ranking multicriterio de los candidatos | `bio-oligo` | 0011 |
-
----
-
-## Cómo se regenera cada resultado
-
-Todos los comandos se corren desde la raíz del repo con `PYTHONPATH=.`.
-
-### `data/results/pangolin_scores.csv` y `pangolin_profile.json` — Módulo 6c
-```bash
-KMP_AFFINITY=disabled PYTHONPATH=. conda run -n pangolin \
-    python pipeline/run_pangolin_cross.py
-```
-~3 min. Corre el **control positivo antes que nada** y aborta si los cuatro sitios
-canónicos no son los cuatro picos más altos del perfil.
-
-### `data/results/modulo6b_windows.json` — las 44 ventanas del embudo
-```bash
-PYTHONPATH=. conda run -n bio-oligo python pipeline/run_masking.py --emit-windows
-```
-Materializa qué candidatos sobrevivieron los Módulos 2 → 3 → 4. Va en un archivo
-porque el embudo necesita ViennaRNA (`bio-oligo`) y el enmascarado necesita los
-pesos del predictor (`spliceai`/`pangolin`), y los entornos son disjuntos. Efecto
-secundario deseable: los dos predictores evalúan **las mismas 44 ventanas por
-construcción**, no por coincidencia.
-
-### `data/results/modulo6b_masking*.csv` — Módulo 6b, con cada predictor
-```bash
-# requiere modulo6b_windows.json
-PYTHONPATH=. conda run -n spliceai python pipeline/run_masking.py --predictor spliceai
-KMP_AFFINITY=disabled PYTHONPATH=. conda run -n pangolin \
-    python pipeline/run_masking.py --predictor pangolin
-```
-~5 min y ~15 min respectivamente (49 inferencias cada uno). **Orden de operaciones
-deliberado:** corre los 4 controles del método primero y **aborta sin escribir el
-CSV** si alguno falla, así no puede existir un archivo de resultados cuyo método no
-haya sido validado en la misma corrida y con el mismo predictor.
-
-### Dependencias externas que NO están en el repo
-
-- **Transcriptoma humano** para el Módulo 5 (~120 MB comprimido, ~150 MB de índice
-  BLAST). Se baja de Ensembl y se indexa; ver `data/reference/README.md`.
-- **Pesos de los predictores**: vienen dentro de los paquetes `spliceai` (~90 MB) y
-  `pangolin` (~177 MB). No hay que bajarlos aparte.
-
----
-
-## La plataforma visual
-
-```bash
-PYTHONPATH=. conda run -n bio-oligo uvicorn backend.main:app --reload   # :8000
-cd frontend && npm install && npm run dev                              # :5173
-```
-
-El backend sirve los CSV ya calculados: **no** recalcula nada por request (una
-corrida de enmascarado son minutos). Si falta un archivo de resultados, el endpoint
-devuelve 503 con el comando exacto que lo genera.
-
----
-
-## Tests
+### Tests
 
 ```bash
 scripts/run-in-env.sh python -m pytest tests/ -q
 ```
 
-**203 pasando, 0 fallando, 0 salteados.** Si aparecen tests "salteados por BLAST no
-instalado", el problema es el entorno, no el código: ver la sección siguiente.
-
-Corren en `bio-oligo` y **no cargan pesos de ningún predictor**: donde hace falta un
-predictor se inyecta un scorer determinista (`CallableScorer`). Los valores numéricos
-que aparecen en los tests son los **medidos** en las corridas documentadas, no
-inventados — varios tests existen para detectar que un refactor cambió un resultado
-ya publicado.
+**221 passing, 0 failing, 0 skipped.** Values asserted in tests are the **measured** results of
+documented runs, not invented — several tests exist specifically to catch a refactor silently
+changing an already-published result. A mutation-testing audit during review killed 23 of 29
+injected bugs (79%).
 
 ---
 
-## Limitaciones
+## Known issues (from adversarial review)
 
-Estas se declaran en cada resultado y no se pueden omitir al comunicarlo:
+The project was submitted to a panel of 6 independent reviewers (splicing biology, statistics,
+reproducibility, ASO therapeutics, code integrity, and a hostile red team). **These remain open:**
 
-- **Nada está validado en célula.** Todo el repo son predicciones.
-- **Ningún predictor tiene modelo de retina.** SpliceAI no modela tejido; los cuatro
-  tejidos de Pangolin son corazón, hígado, cerebro y testículo. Lo interpretable es
-  **la posición** de los picos y **el signo** del cambio, no la magnitud.
-- **El acuerdo entre los dos predictores no es del todo independiente**: ambos se
-  entrenaron en buena parte sobre las mismas bases públicas de anotaciones.
-- **El enmascarado con N es binario y total**: asume ocupación del 100 % de las
-  moléculas y bloqueo perfecto. Es condición **necesaria, no suficiente**.
-- **El off-target se evalúa contra el transcriptoma, no contra el genoma completo.**
-- **Ningún candidato final cubre el aceptor críptico**: de los 20 del barrido que lo
-  cubrían, 16 cayeron en filtros heurísticos y 4 en termodinámica.
+| ID | Issue | Impact |
+|---|---|---|
+| **CRIT-4** | **Strand-orientation bug in Tm.** Biopython requires the RNA strand for `R_DNA_NN1`; the code passes the ASO | Module 4 funnel goes from **44 to 16** candidates, only 6 in common. One of the three final candidates would not have survived. **Independently verified.** |
+| **CRIT-1** | The calibration does not apply the pipeline's selection criterion, and runs in the opposite direction | The 0.974 AUC measures the masking proxy, not the selection criterion |
+| **CRIT-2** | The "two borders" rule is operationally a one-border rule | No candidate abolishes only the donor, in any predictor. **Verified.** |
+| **CRIT-3** | p = 5.96×10⁻⁵ assumes independence | The 5 known-effective AONs overlap a single site; corrected p is **0.03–0.11** |
+| **CRIT-6** | Mislabelled sites in `retina_comparacion.json` | Normalisation used the exon-2 donor labelled as exon 3. **Verified.** |
+| **CRIT-5** | The 4 masking controls are scale-invariant | A predictor with no biology at all passes all four |
+| **CRIT-7** | The pipeline cannot detect splice-site displacement | It scores 4 fixed offsets and discards the rest of the profile |
+
+**Nothing downstream of Module 4 should be treated as final until CRIT-4 is resolved.**
+
+### What survived the review
+
+- The cryptic donor `GGG|GTAGGT` → `GAG|GTAGGT`: the variant itself installs the −2 consensus
+  adenine over an intact GT. Model-free and threshold-free.
+- SpliceAI and Pangolin place their argmax at **exactly** −89 and +1, neighbours at ~1e−5.
+- All arithmetic: six reviewers, zero calculation errors.
+- `rank_summary` matches `scipy.stats.mannwhitneyu` digit for digit.
+- The 50/50 thermodynamic convention is **not** cherry-picking: 61 of 101 weight values give the
+  identical Pareto front.
 
 ---
 
-## Documentación
+## Repository layout
 
-El razonamiento, las decisiones y su evidencia viven en el vault de Obsidian que
-acompaña a este repo (`bio-oligonucleotidos-obsidian`):
+```
+pipeline/        the 7 modules + reproducible runners
+backend/         FastAPI, one router per module
+frontend/        React + TypeScript, one tab per module
+tests/           221 tests
+scripts/         environment wrapper, documentation linter
+docs/            methodological progress report (LaTeX + PDF)
+data/results/    generated results (versioned)
+data/reference/  external data (~490 MB, NOT versioned)
+```
 
-- `wiki/decisiones/` — ADR: qué se decidió, por qué, y qué alternativas se
-  descartaron.
-- `wiki/bitacora/` — qué se hizo cada día, con los números medidos.
-- `wiki/riesgos/` — lo que puede invalidar un resultado.
-- `wiki/estado/auditoria-publicabilidad.md` — qué falta para un manuscrito.
-- `index.md` — punto de entrada.
+Research documentation — 13 ADRs, 15 lab-notebook entries, the claims dossier and the adversarial
+review report — lives in a separate Obsidian vault following the *LLM Wiki* pattern.
+
+---
+
+## Declared limitations
+
+Stated with every result, and not to be omitted when communicating it:
+
+- **No experimental validation.** Zero ASOs synthesised or assayed.
+- **The `N`-masking proxy does not measure efficacy.** It is binary and total: it assumes 100%
+  occupancy and perfect block. A necessary condition, not a sufficient one.
+- **PMO chemistry has no published precedent** for this variant, and no standardised
+  nearest-neighbour tables exist: Tm and ΔG use an RNA/DNA hybrid proxy.
+- **Off-target severity thresholds are uncalibrated** design choices.
+- **Predictor agreement is not fully independent** — they share public annotation databases.
+- **Retina-SpliceAI is a preprint**, trained on whole retina rather than isolated photoreceptors.
+
+---
+
+## Sources this work builds on
+
+- Peng et al. *IOVS* 2025;66(1):65 — minigene measurement of PE1b/PE1c/PE1d.
+- Kaltak et al. *Mol Ther Nucleic Acids* 2023 — the 32-AON oligo-walk that produced QR-1011.
+- Jaganathan et al. *Cell* 2019 — SpliceAI. · Zeng & Li 2022 — Pangolin.
+- Riepe et al. — Retina-SpliceAI (`github.com/cmbi/Retina-SpliceAI`, GPL-3.0).
+
+---
+
+## Authors
+
+**Sergio Mauricio Nuñez** · **Amyra Sanchez** — YAIS Lab
+
+Built with AI-agent assistance (Claude, Anthropic) for software implementation, pipeline execution
+and drafting, under author supervision.
+
+## Licence
+
+Not yet defined. Until a licence file is added, all rights are reserved by the authors.
