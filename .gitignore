@@ -41,6 +41,11 @@ Thumbs.db
 .idea/
 .vscode/
 
+# --- Configuración local de la máquina (no del proyecto) ---
+# settings.local.json guarda permisos de la sesión y rutas del usuario.
+# El sufijo `.local` ya indica que es por-máquina; no debe versionarse.
+.claude/settings.local.json
+
 # --- Secretos (nunca deberían existir acá, pero por si acaso) ---
 .env
 .env.*

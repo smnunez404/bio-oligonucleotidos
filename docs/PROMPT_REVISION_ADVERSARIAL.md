@@ -1,7 +1,7 @@
 # Prompt para la sesión de revisión adversarial
 
 > Copiar **todo** el contenido de abajo (desde la línea `---`) y pegarlo como primer mensaje de una
-> sesión nueva de Claude Code, abierta en `/home/mauri/Documentos/projects/bio-oligonucleotidos`.
+> sesión nueva de Claude Code, abierta en `<RUTA_AL_REPO>`.
 >
 > El prompt es autocontenido: no asume ningún contexto de sesiones previas.
 
@@ -32,9 +32,9 @@ Pipeline computacional que diseña candidatos a **oligonucleótido antisentido (
 **PMO**, para bloquear un pseudoexón causado por la variante intrónica profunda **ABCA4
 c.161-395G>A**, asociada a la enfermedad de Stargardt tipo 1.
 
-- **Repositorio de código**: `/home/mauri/Documentos/projects/bio-oligonucleotidos`
+- **Repositorio de código**: `<RUTA_AL_REPO>`
 - **Vault de documentación (Obsidian, markdown plano)**:
-  `/home/mauri/Documentos/projects/bio-oligonucleotidos-obsidian`
+  `<RUTA_AL_VAULT>`
 - 7 módulos, 221 tests, 13 ADRs, 14 entradas de bitácora.
 - **Ningún ASO fue sintetizado ni ensayado.** Todo es predicción computacional.
 
