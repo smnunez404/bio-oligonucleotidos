@@ -1,0 +1,192 @@
+{
+ "predictor": "pangolin",
+ "padding": 6000,
+ "region_nt": 12001,
+ "variant_offset": 6000,
+ "baseline": {
+  "donador_criptico": 0.2829,
+  "aceptor_criptico": 0.1666,
+  "donador_canonico_e3": 0.5976,
+  "aceptor_canonico_e3": 0.5652
+ },
+ "controls": [
+  {
+   "name": "ctrl_far_upstream",
+   "label": "sin efecto sobre el donador críptico",
+   "donor_cryptic": 0.2891,
+   "delta_donor": 0.0062,
+   "retention_donor": 1.0218,
+   "donor_canonical_e3": 0.5983,
+   "retention_canonical": 1.0011,
+   "expected": "sin efecto sobre el donador críptico",
+   "ok": true
+  },
+  {
+   "name": "ctrl_far_downstream",
+   "label": "sin efecto sobre el donador críptico",
+   "donor_cryptic": 0.2619,
+   "delta_donor": -0.021,
+   "retention_donor": 0.9259,
+   "donor_canonical_e3": 0.5995,
+   "retention_canonical": 1.0031,
+   "expected": "sin efecto sobre el donador críptico",
+   "ok": true
+  },
+  {
+   "name": "ctrl_on_donor",
+   "label": "anula el donador críptico",
+   "donor_cryptic": 0.0,
+   "delta_donor": -0.2829,
+   "retention_donor": 0.0,
+   "donor_canonical_e3": 0.6351,
+   "retention_canonical": 1.0628,
+   "expected": "anula el donador críptico",
+   "ok": true
+  },
+  {
+   "name": "ctrl_on_canonical_e3",
+   "label": "anula el donador canónico del E3, no el críptico",
+   "donor_cryptic": 0.2746,
+   "delta_donor": -0.0083,
+   "retention_donor": 0.9708,
+   "donor_canonical_e3": 0.0,
+   "retention_canonical": 0.0,
+   "expected": "anula el donador canónico del E3, no el críptico",
+   "ok": true
+  }
+ ],
+ "block_retention": 0.25,
+ "canonical_safe_retention": 0.8,
+ "n_candidates": 44,
+ "distribution_donor_only": {
+  "bloquea": 9,
+  "sin_efecto": 28,
+  "contraproducente": 7
+ },
+ "distribution": {
+  "anula_pseudoexon": 10,
+  "sin_efecto": 34,
+  "daña_canonico": 0
+ },
+ "useful_candidates": [
+  {
+   "name": "cand_5877",
+   "start_rel": -123,
+   "end_rel": -103,
+   "borders": [
+    "donador",
+    "aceptor"
+   ],
+   "retention_donor": 0.1778,
+   "retention_acceptor": 0.0337,
+   "retention_canonical": 1.0317
+  },
+  {
+   "name": "cand_5878",
+   "start_rel": -122,
+   "end_rel": -102,
+   "borders": [
+    "donador",
+    "aceptor"
+   ],
+   "retention_donor": 0.1702,
+   "retention_acceptor": 0.0126,
+   "retention_canonical": 1.0349
+  },
+  {
+   "name": "cand_5879",
+   "start_rel": -121,
+   "end_rel": -101,
+   "borders": [
+    "donador",
+    "aceptor"
+   ],
+   "retention_donor": 0.1776,
+   "retention_acceptor": 0.0033,
+   "retention_canonical": 1.0307
+  },
+  {
+   "name": "cand_5880",
+   "start_rel": -120,
+   "end_rel": -100,
+   "borders": [
+    "donador",
+    "aceptor"
+   ],
+   "retention_donor": 0.1562,
+   "retention_acceptor": 0.0045,
+   "retention_canonical": 1.0368
+  },
+  {
+   "name": "cand_5881",
+   "start_rel": -119,
+   "end_rel": -99,
+   "borders": [
+    "donador",
+    "aceptor"
+   ],
+   "retention_donor": 0.1548,
+   "retention_acceptor": 0.0114,
+   "retention_canonical": 1.0396
+  },
+  {
+   "name": "cand_5882",
+   "start_rel": -118,
+   "end_rel": -98,
+   "borders": [
+    "donador",
+    "aceptor"
+   ],
+   "retention_donor": 0.2181,
+   "retention_acceptor": 0.0026,
+   "retention_canonical": 1.0297
+  },
+  {
+   "name": "cand_5883",
+   "start_rel": -117,
+   "end_rel": -97,
+   "borders": [
+    "aceptor"
+   ],
+   "retention_donor": 0.3532,
+   "retention_acceptor": 0.0065,
+   "retention_canonical": 1.0244
+  },
+  {
+   "name": "cand_5992",
+   "start_rel": -8,
+   "end_rel": 12,
+   "borders": [
+    "donador",
+    "aceptor"
+   ],
+   "retention_donor": 0.0,
+   "retention_acceptor": 0.0962,
+   "retention_canonical": 1.0628
+  },
+  {
+   "name": "cand_5998",
+   "start_rel": -2,
+   "end_rel": 18,
+   "borders": [
+    "donador",
+    "aceptor"
+   ],
+   "retention_donor": 0.0001,
+   "retention_acceptor": 0.0733,
+   "retention_canonical": 1.0666
+  },
+  {
+   "name": "cand_5999",
+   "start_rel": -1,
+   "end_rel": 19,
+   "borders": [
+    "donador",
+    "aceptor"
+   ],
+   "retention_donor": 0.0001,
+   "retention_acceptor": 0.0606,
+   "retention_canonical": 1.0701
+  }
+ ]
+}

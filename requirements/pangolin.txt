@@ -1,0 +1,28 @@
+# Entorno `pangolin` — Módulo 6c y 6b (validación cruzada con Pangolin).
+#
+# SEPARADO A PROPÓSITO: ver la nota en requirements/spliceai.txt.
+#
+# conda create -n pangolin python=3.11
+# pip install -r requirements/pangolin.txt
+#
+# El paquete NO está en PyPI: se instala desde el repo del grupo que lo publicó, y
+# trae sus 64 archivos de pesos (~177 MB) adentro. La versión que reporta es 1.0.2.
+#
+# DOS TRAMPAS DOCUMENTADAS, las dos capaces de arruinar una corrida en silencio:
+#
+# 1) KMP_AFFINITY=disabled es OBLIGATORIO. Sin esa variable, importar torch aborta
+#    con un error de OpenMP que no menciona la causa. El pipeline lo verifica y
+#    falla con mensaje claro (pipeline/pangolin_cross.require_affinity_disabled).
+#      KMP_AFFINITY=disabled python pipeline/run_pangolin_cross.py
+#
+# 2) Pangolin solo puntúa las bases CENTRALES: descuenta 5000 nt de contexto a cada
+#    lado y devuelve len(seq) - 10000 scores. Con una región de 10.001 nt devolvería
+#    UN solo punto, sin avisar. De ahí que las corridas usen padding >= 6000.
+
+torch==2.13.0
+numpy==2.4.6
+pandas==3.0.5
+requests==2.34.2   # pipeline.sequence, para traer la región de Ensembl
+
+# Pangolin desde el repo de origen (trae los 64 pesos):
+git+https://github.com/tkzeng/Pangolin.git

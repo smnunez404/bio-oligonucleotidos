@@ -1,0 +1,27 @@
+# Entorno `spliceai` — Módulo 6 y 6b (inferencia neural con SpliceAI).
+#
+# SEPARADO A PROPÓSITO: TensorFlow y PyTorch (Pangolin) en el mismo entorno pelean
+# por OpenMP y por versiones de numpy. Cada predictor tiene el suyo.
+#
+# conda create -n spliceai python=3.11
+# pip install -r requirements/spliceai.txt
+#
+# TRAMPA DOCUMENTADA: `spliceai` importa `pkg_resources`, que se eliminó en
+# setuptools >= 81. El pin de setuptools NO es cosmético — sin él el import falla.
+#
+# Los 5 modelos .h5 (~90 MB) vienen DENTRO del paquete `spliceai`; no hay que
+# descargar pesos aparte. Se guardaron con Keras 2.x (~2019) y cargan con Keras 3.x
+# con un aviso benigno ("No training configuration found in the save file"). Ese es
+# el punto más probable de ruptura en un futuro upgrade de TensorFlow.
+#
+# NO requiere GPU: ~11 s por secuencia de 12 kb en 4 núcleos.
+
+spliceai==1.3.1
+tensorflow==2.21.0
+keras==3.15.1
+setuptools==75.8.0  # < 81: `spliceai` necesita pkg_resources
+numpy==2.4.6
+pandas==3.0.5
+pyfaidx==0.9.0.4
+pysam==0.24.0
+requests==2.34.2   # pipeline.sequence, para traer la región de Ensembl

@@ -1,0 +1,37 @@
+# Entorno `bio-oligo` — pipeline general, backend y figuras.
+#
+# Es el entorno por defecto: corre los Módulos 1-5 y 7, el backend y los tests.
+# NO tiene ninguno de los dos predictores neuronales (ver los otros dos archivos):
+# TensorFlow y PyTorch no conviven bien y no hacen falta acá.
+#
+# conda create -n bio-oligo python=3.11
+# conda install -n bio-oligo -c conda-forge -c bioconda viennarna blast
+# pip install -r requirements/bio-oligo.txt
+
+# --- Módulo 1: secuencia de referencia (Ensembl REST) ---
+requests==2.34.2
+
+# --- Módulo 4: termodinámica (accesibilidad del ARN) ---
+# ViennaRNA NO se instala con pip acá: viene de conda-forge porque necesita la
+# librería C compilada. `pip install ViennaRNA` compila desde fuente y falla sin
+# toolchain. Versión verificada: 2.7.2
+#   conda install -c conda-forge viennarna
+# import RNA  ->  RNA.__version__ == '2.7.2'
+
+# --- Módulo 5: off-target (BLAST+ contra el transcriptoma humano) ---
+# blastn y makeblastdb son BINARIOS, no paquetes de Python. De bioconda:
+#   conda install -c bioconda blast
+# Versión verificada: blastn 2.17.0+
+# Sin ellos, pipeline/off_target.py falla con un mensaje explícito.
+biopython==1.87
+
+# --- Backend / plataforma visual ---
+fastapi==0.140.13
+uvicorn==0.51.0
+
+# --- Figuras ---
+matplotlib==3.11.1
+numpy==2.4.6
+
+# --- Tests ---
+pytest==9.1.1

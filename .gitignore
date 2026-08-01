@@ -1,0 +1,50 @@
+# --- Entornos de Python ---
+# OJO: el entorno de esta máquina se llama `venv/` (sin punto). Antes solo se
+# ignoraba `.venv/`, así que 284 MB se habrían subido al repositorio público.
+venv/
+.venv/
+env/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# --- Node ---
+node_modules/
+frontend/dist/
+*.tsbuildinfo
+
+# --- Datos de referencia (~490 MB, regenerables) ---
+# Transcriptoma indexado de Ensembl (Módulo 5), pesos de Retina-SpliceAI y
+# suplemento de Kaltak. Se regeneran con lo documentado en el README.
+data/reference/*
+!data/reference/README.md
+# Las secuencias de AON de Kaltak et al. 2023 SÍ se versionan: son datos
+# científicos publicados y sin ellas la calibración no es reproducible. El
+# suplemento en PDF/XLSX NO se versiona -- es material con copyright de
+# Elsevier; el README documenta cómo obtenerlo.
+!data/reference/kaltak2023/
+data/reference/kaltak2023/*
+!data/reference/kaltak2023/aon_sequences.csv
+
+# --- Artefactos de LaTeX ---
+*.aux
+*.log
+*.out
+*.toc
+*.synctex.gz
+
+# --- Sistema / editor ---
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+
+# --- Secretos (nunca deberían existir acá, pero por si acaso) ---
+.env
+.env.*
+*.pem
+*.key
+kaggle.json
+credentials*.json

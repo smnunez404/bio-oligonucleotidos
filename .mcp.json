@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "obsidian": {
+      "command": "npx",
+      "args": ["-y", "mcp-remote", "http://localhost:22367/sse"]
+    }
+  }
+}

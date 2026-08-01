@@ -1,0 +1,68 @@
+{
+  "spliceai": {
+    "donador_criptico": {
+      "wt": 0.1939,
+      "mut": 0.5595,
+      "delta": 0.3656
+    },
+    "aceptor_criptico": {
+      "wt": 0.0605,
+      "mut": 0.2709,
+      "delta": 0.2104
+    },
+    "donador_canonico_e3": {
+      "wt": 0.9856,
+      "mut": 0.9852,
+      "delta": -0.0004
+    },
+    "aceptor_canonico_e2": {
+      "wt": 0.9968,
+      "mut": 0.9971,
+      "delta": 0.0003
+    }
+  },
+  "retina": {
+    "donador_criptico": {
+      "wt": 0.031,
+      "mut": 0.2448,
+      "delta": 0.2138
+    },
+    "aceptor_criptico": {
+      "wt": 0.0111,
+      "mut": 0.1451,
+      "delta": 0.134
+    },
+    "donador_canonico_e3": {
+      "wt": 0.7457,
+      "mut": 0.7552,
+      "delta": 0.0095
+    },
+    "aceptor_canonico_e2": {
+      "wt": 0.8726,
+      "mut": 0.8958,
+      "delta": 0.0232
+    }
+  },
+  "gtex": {
+    "donador_criptico": {
+      "wt": 0.3722,
+      "mut": 0.7084,
+      "delta": 0.3362
+    },
+    "aceptor_criptico": {
+      "wt": 0.0745,
+      "mut": 0.3023,
+      "delta": 0.2278
+    },
+    "donador_canonico_e3": {
+      "wt": 0.9941,
+      "mut": 0.9934,
+      "delta": -0.0008
+    },
+    "aceptor_canonico_e2": {
+      "wt": 0.9953,
+      "mut": 0.9954,
+      "delta": 0.0001
+    }
+  }
+}

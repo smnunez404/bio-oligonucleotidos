@@ -1,0 +1,12 @@
+# Este proyecto usa TRES entornos que NO son intercambiables.
+# Las dependencias reales están en requirements/, una por entorno:
+#
+#   requirements/bio-oligo.txt   pipeline general, backend, figuras, tests
+#   requirements/spliceai.txt    Módulo 6 / 6b con SpliceAI (TensorFlow)
+#   requirements/pangolin.txt    Módulo 6c / 6b con Pangolin (PyTorch)
+#
+# Los dos predictores no pueden convivir en el mismo entorno. Ver README.md.
+#
+# Este archivo se deja como puntero para que `pip install -r requirements.txt`
+# instale el entorno por defecto y no falle silenciosamente.
+-r requirements/bio-oligo.txt
