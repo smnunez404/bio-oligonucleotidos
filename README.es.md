@@ -222,7 +222,7 @@ abiertos:**
 pipeline/        los 7 módulos + runners reproducibles
 backend/         FastAPI, un router por módulo
 frontend/        React + TypeScript, una pestaña por módulo
-tests/           221 tests
+tests/           223 tests
 scripts/         wrapper de entorno, linter de documentación
 docs/            informe de avance metodológico (LaTeX + PDF)
 data/results/    resultados generados (versionados)

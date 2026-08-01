@@ -217,7 +217,7 @@ reproducibility, ASO therapeutics, code integrity, and a hostile red team). **Th
 pipeline/        the 7 modules + reproducible runners
 backend/         FastAPI, one router per module
 frontend/        React + TypeScript, one tab per module
-tests/           221 tests
+tests/           223 tests
 scripts/         environment wrapper, documentation linter
 docs/            methodological progress report (LaTeX + PDF)
 data/results/    generated results (versioned)
