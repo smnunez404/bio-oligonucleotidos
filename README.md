@@ -1,6 +1,6 @@
 # In silico design of antisense oligonucleotides for ABCA4 c.161-395G>A
 
-[![tests](https://img.shields.io/badge/tests-221%20passing-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-223%20passing-brightgreen)](#tests)
 [![status](https://img.shields.io/badge/status-research%20prototype-orange)](#-what-this-is-not)
 [![experimental validation](https://img.shields.io/badge/experimental%20validation-none-red)](#-what-this-is-not)
 
@@ -62,17 +62,25 @@ The predicted pseudoexon measures **91 bp**, matching *exactly* the PE1b measure
 in Peng et al. (IOVS 2025) — two fully independent methods converging on the same number. This is
 the claim that survived adversarial review untouched.
 
-### Three predictors, one of them tissue-correct
+### Four predictors — and why their agreement proves less than it seems
 
 | Predictor | Trained on | Verdict (abolish / no effect / harms) |
 |---|---|---|
 | SpliceAI (Illumina) | tissue-agnostic | 10 / 34 / 0 |
 | Pangolin (U. Penn) | 4 tissues, no retina | 10 / 34 / 0 |
-| **Retina-SpliceAI** (Radboud UMC) | **503 human retina samples** | **10 / 34 / 0** |
+| Retina-SpliceAI (Radboud UMC) | 503 human retina samples | 10 / 34 / 0 |
+| **GTEx control** | **deliberately the wrong tissue** | **10 / 34 / 0** |
 
-All three select the **same exact set** of 10 candidates. See
-[Known issues](#known-issues-from-adversarial-review) for why this agreement is weaker evidence than
-it appears.
+All four select the **same exact set** of 10 candidates.
+
+The fourth row is a **negative control run after adversarial review**, and it undercuts the
+project's own earlier claim. The three-predictor agreement was presented as cross-validation; a
+model trained on deliberately wrong tissue reproducing it exactly shows the agreement reflects
+**shared architecture and shared training annotations**, not tissue-robust biology.
+
+What still holds: the cryptic sites at +1 and −89 do not rest on this agreement — they rest on the
+consensus motif and on Pangolin (a different architecture) placing its argmax at exactly those
+positions.
 
 ---
 
@@ -167,7 +175,7 @@ python3 scripts/lint_vault.py
 scripts/run-in-env.sh python -m pytest tests/ -q
 ```
 
-**221 passing, 0 failing, 0 skipped.** Values asserted in tests are the **measured** results of
+**223 passing, 0 failing, 0 skipped.** Values asserted in tests are the **measured** results of
 documented runs, not invented — several tests exist specifically to catch a refactor silently
 changing an already-published result. A mutation-testing audit during review killed 23 of 29
 injected bugs (79%).

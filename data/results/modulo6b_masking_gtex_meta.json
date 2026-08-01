@@ -1,0 +1,186 @@
+{
+ "predictor": "gtex",
+ "padding": 6000,
+ "region_nt": 12001,
+ "variant_offset": 6000,
+ "baseline": {
+  "donador_criptico": 0.7084,
+  "aceptor_criptico": 0.3023,
+  "donador_canonico_e3": 0.9958,
+  "aceptor_canonico_e3": 0.9954
+ },
+ "controls": [
+  {
+   "name": "ctrl_far_upstream",
+   "label": "sin efecto sobre el donador críptico",
+   "donor_cryptic": 0.6716,
+   "delta_donor": -0.0368,
+   "retention_donor": 0.9481,
+   "donor_canonical_e3": 0.9957,
+   "retention_canonical": 0.9999,
+   "expected": "sin efecto sobre el donador críptico",
+   "ok": true
+  },
+  {
+   "name": "ctrl_far_downstream",
+   "label": "sin efecto sobre el donador críptico",
+   "donor_cryptic": 0.6881,
+   "delta_donor": -0.0203,
+   "retention_donor": 0.9713,
+   "donor_canonical_e3": 0.9958,
+   "retention_canonical": 1.0,
+   "expected": "sin efecto sobre el donador críptico",
+   "ok": true
+  },
+  {
+   "name": "ctrl_on_donor",
+   "label": "anula el donador críptico",
+   "donor_cryptic": 0.0,
+   "delta_donor": -0.7084,
+   "retention_donor": 0.0,
+   "donor_canonical_e3": 0.9961,
+   "retention_canonical": 1.0003,
+   "expected": "anula el donador críptico",
+   "ok": true
+  },
+  {
+   "name": "ctrl_on_canonical_e3",
+   "label": "anula el donador canónico del E3, no el críptico",
+   "donor_cryptic": 0.5212,
+   "delta_donor": -0.1872,
+   "retention_donor": 0.7357,
+   "donor_canonical_e3": 0.0,
+   "retention_canonical": 0.0,
+   "expected": "anula el donador canónico del E3, no el críptico",
+   "ok": true
+  }
+ ],
+ "block_retention": 0.25,
+ "canonical_safe_retention": 0.8,
+ "n_candidates": 44,
+ "distribution_donor_only": {
+  "bloquea": 3,
+  "sin_efecto": 41,
+  "contraproducente": 0
+ },
+ "distribution": {
+  "anula_pseudoexon": 10,
+  "sin_efecto": 34,
+  "daña_canonico": 0
+ },
+ "useful_candidates": [
+  {
+   "name": "cand_5877",
+   "start_rel": -123,
+   "end_rel": -103,
+   "borders": [
+    "aceptor"
+   ],
+   "retention_donor": 0.6292,
+   "retention_acceptor": 0.1166,
+   "retention_canonical": 1.0
+  },
+  {
+   "name": "cand_5878",
+   "start_rel": -122,
+   "end_rel": -102,
+   "borders": [
+    "aceptor"
+   ],
+   "retention_donor": 0.6127,
+   "retention_acceptor": 0.0548,
+   "retention_canonical": 1.0
+  },
+  {
+   "name": "cand_5879",
+   "start_rel": -121,
+   "end_rel": -101,
+   "borders": [
+    "aceptor"
+   ],
+   "retention_donor": 0.635,
+   "retention_acceptor": 0.0184,
+   "retention_canonical": 1.0
+  },
+  {
+   "name": "cand_5880",
+   "start_rel": -120,
+   "end_rel": -100,
+   "borders": [
+    "aceptor"
+   ],
+   "retention_donor": 0.6015,
+   "retention_acceptor": 0.0263,
+   "retention_canonical": 1.0001
+  },
+  {
+   "name": "cand_5881",
+   "start_rel": -119,
+   "end_rel": -99,
+   "borders": [
+    "aceptor"
+   ],
+   "retention_donor": 0.6096,
+   "retention_acceptor": 0.0508,
+   "retention_canonical": 1.0001
+  },
+  {
+   "name": "cand_5882",
+   "start_rel": -118,
+   "end_rel": -98,
+   "borders": [
+    "aceptor"
+   ],
+   "retention_donor": 0.654,
+   "retention_acceptor": 0.0154,
+   "retention_canonical": 1.0
+  },
+  {
+   "name": "cand_5883",
+   "start_rel": -117,
+   "end_rel": -97,
+   "borders": [
+    "aceptor"
+   ],
+   "retention_donor": 0.6812,
+   "retention_acceptor": 0.0607,
+   "retention_canonical": 1.0
+  },
+  {
+   "name": "cand_5992",
+   "start_rel": -8,
+   "end_rel": 12,
+   "borders": [
+    "donador",
+    "aceptor"
+   ],
+   "retention_donor": 0.0,
+   "retention_acceptor": 0.2118,
+   "retention_canonical": 1.0003
+  },
+  {
+   "name": "cand_5998",
+   "start_rel": -2,
+   "end_rel": 18,
+   "borders": [
+    "donador",
+    "aceptor"
+   ],
+   "retention_donor": 0.0,
+   "retention_acceptor": 0.1637,
+   "retention_canonical": 1.0003
+  },
+  {
+   "name": "cand_5999",
+   "start_rel": -1,
+   "end_rel": 19,
+   "borders": [
+    "donador",
+    "aceptor"
+   ],
+   "retention_donor": 0.0,
+   "retention_acceptor": 0.144,
+   "retention_canonical": 1.0003
+  }
+ ]
+}

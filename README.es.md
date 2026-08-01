@@ -1,6 +1,6 @@
 # Diseño in silico de oligonucleótidos antisentido para ABCA4 c.161-395G>A
 
-[![tests](https://img.shields.io/badge/tests-221%20pasando-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-223%20pasando-brightgreen)](#tests)
 [![estado](https://img.shields.io/badge/estado-prototipo%20de%20investigación-orange)](#️-lo-que-esto-no-es)
 [![validación](https://img.shields.io/badge/validación%20experimental-ninguna-red)](#️-lo-que-esto-no-es)
 
@@ -65,17 +65,25 @@ El pseudoexón predicho mide **91 pb**, coincidiendo *exactamente* con el PE1b m
 minigén en Peng et al. (IOVS 2025) — dos métodos completamente independientes convergiendo en el
 mismo número. Es la afirmación que salió intacta de la revisión adversarial.
 
-### Tres predictores, uno con el tejido correcto
+### Cuatro predictores — y por qué su concordancia prueba menos de lo que parece
 
 | Predictor | Entrenado sobre | Veredicto (anula / sin efecto / daña) |
 |---|---|---|
 | SpliceAI (Illumina) | agnóstico de tejido | 10 / 34 / 0 |
 | Pangolin (U. Penn) | 4 tejidos, sin retina | 10 / 34 / 0 |
-| **Retina-SpliceAI** (Radboud UMC) | **503 muestras de retina humana** | **10 / 34 / 0** |
+| Retina-SpliceAI (Radboud UMC) | 503 muestras de retina humana | 10 / 34 / 0 |
+| **Control GTEx** | **el tejido equivocado, a propósito** | **10 / 34 / 0** |
 
-Los tres seleccionan **el mismo conjunto exacto** de 10 candidatos. Ver
-[Problemas conocidos](#problemas-conocidos-de-la-revisión-adversarial) para entender por qué esa
-concordancia es evidencia más débil de lo que parece.
+Los cuatro seleccionan **el mismo conjunto exacto** de 10 candidatos.
+
+La cuarta fila es un **control negativo corrido después de la revisión adversarial**, y desmiente
+una afirmación previa del propio proyecto. La concordancia de tres predictores se presentaba como
+validación cruzada; que un modelo entrenado sobre el tejido deliberadamente equivocado la reproduzca
+exactamente muestra que refleja **arquitectura y anotaciones de entrenamiento compartidas**, no
+biología robusta al tejido.
+
+Lo que sí se sostiene: los sitios crípticos en +1 y −89 no dependen de esa concordancia — dependen
+del motivo de consenso y de que Pangolin (otra arquitectura) ponga su argmax exactamente ahí.
 
 ---
 
@@ -171,7 +179,7 @@ python3 scripts/lint_vault.py
 scripts/run-in-env.sh python -m pytest tests/ -q
 ```
 
-**221 pasando, 0 fallando, 0 salteados.** Los valores que los tests verifican son los **medidos** en
+**223 pasando, 0 fallando, 0 salteados.** Los valores que los tests verifican son los **medidos** en
 corridas documentadas, no inventados — varios tests existen justamente para detectar que un refactor
 cambió en silencio un resultado ya publicado. Una auditoría de mutación durante la revisión mató 23
 de 29 bugs inyectados (79 %).
