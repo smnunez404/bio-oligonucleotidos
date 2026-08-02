@@ -125,15 +125,16 @@ diseño in silico de candidatos ASO de conmutación de splicing con química \te
 construido de punta a punta por un agente de IA en seis días y sometido después a un panel de seis
 revisores adversariales independientes.
 
-El pipeline reproduce dos resultados con anclaje externo. Primero, la variante instala la adenina de
+El pipeline reproduce tres resultados con anclaje externo. Primero, la variante aporta la adenina de
 consenso en $-2$ del motivo donador sobre un dinucleótido GT intacto
 (\texttt{GGG|GTAGGT}~$\rightarrow$~\texttt{GAG|GTAGGT}), una observación sin modelo y sin umbral.
 Segundo, dos predictores neuronales entrenados de forma independiente~\cite{jaganathan2019,zeng2022}
 ubican su máximo exactamente en $+1$ y $-89$ respecto de la variante, lo que implica un pseudoexón
-de \textbf{91~pb} que coincide exactamente con la medición por minigén de Wang et
-al.~\cite{wang2025}. Sobre un oligo-walk publicado independiente con eficacia
-medida~\cite{kaltak2023}, el mismo puntaje ubica los cinco AONs eficaces conocidos en las posiciones
-1, 3, 4, 5 y 6 de 32 ($\mathrm{AUC}=0{,}974$).
+de 91~pb --- y eso reproduce, \emph{posición por posición}, los bordes que Corradi et
+al.~\cite{corradi2023} ya habían medido por ensayo de midigén en 2023 y cuyo tamaño Wang et
+al.~\cite{wang2025} confirmaría después por minigén. Tercero, sobre un oligo-walk publicado
+independiente con eficacia medida~\cite{kaltak2023}, el mismo puntaje ubica los cinco AONs eficaces
+conocidos en las posiciones 1, 3, 4, 5 y 6 de 32 ($\mathrm{AUC}=0{,}974$).
 
 Reportamos la revisión adversarial como resultado primario y no como un párrafo de limitaciones. El
 panel devolvió \emph{rechazo con invitación a resubmisión mayor} e identificó siete problemas
@@ -142,7 +143,10 @@ temperatura de fusión se había propagado cuatro módulos aguas arriba y había
 un registro de decisión y una conclusión publicada; un control negativo con el tejido
 deliberadamente equivocado reprodujo exactamente la ``concordancia entre tres predictores'', lo que
 muestra que esa concordancia no informa; y una afirmación repetida en seis documentos durante cuatro
-días nunca se había verificado contra la literatura.
+días nunca se había verificado contra la literatura. Armar la lista de referencias de este
+manuscrito --- el último paso antes de someterlo --- produjo dos más del mismo tipo: el paper fuente
+había estado atribuido al primer autor equivocado durante cinco días, y las coordenadas del
+pseudoexón que el proyecto trataba como propias estaban publicadas desde 2023.
 
 \textbf{Ningún candidato fue sintetizado ni ensayado.} Sostenemos que, para investigación construida
 por agentes, la revisión adversarial no es control de calidad opcional sino parte del método, y
@@ -165,12 +169,14 @@ variantes codificantes sino \textbf{variantes intrónicas profundas} que activan
 crípticos, llevando al espliceosoma a tratar un tramo intrónico como si fuera un exón --- un
 \emph{pseudoexón} --- e introducir un codón de terminación prematuro.
 
-Wang et al.~\cite{wang2025} mostraron por ensayo de minigén que \textbf{c.161-395G>A} activa tres
-pseudoexones (PE1b 91~pb, PE1c 255~pb, PE1d 265~pb), con el 76,4\,\% del ARNm resultante
-incorrectamente spliceado. Evaluaron los efectos sobre el splicing con la consulta web de SpliceAI y
-solo reportaron que todas las variantes superaban un delta score de 0,2; no reportaron posiciones de
-los sitios crípticos, coordenadas de los pseudoexones ni una explicación mecanística del cambio de
-base.
+La variante \textbf{c.161-395G>A} fue reportada por tres grupos independientes. Corradi et
+al.~\cite{corradi2023} la caracterizaron primero, en 2023, por ensayo de midigén en una cohorte
+europea, con 36\,\% de ARN silvestre residual y los bordes exactos del pseudoexón. Wang et
+al.~\cite{wang2025} mostraron por minigén que activa tres pseudoexones (PE1b 91~pb, PE1c 255~pb,
+PE1d 265~pb), con el 76,4\,\% del ARNm resultante incorrectamente spliceado, y que es el alelo
+intrónico profundo más frecuente de su cohorte china. Huang et al.~\cite{huang2025} la recuperaron
+otra vez en una cohorte taiwanesa. Ninguno de los tres reporta un oligonucleótido antisentido contra
+ella.
 
 Los ASO de conmutación de splicing se unen al pre-ARNm por complementariedad de bases y
 \textbf{bloquean estéricamente} el acceso a un sitio de splicing sin degradar el
@@ -425,7 +431,7 @@ intrón, otro mecanismo (inclusión de pseudoexón en vez de salto de exón) y o
 
 Estos dos no dependen de ninguna métrica definida por nosotros.
 
-\subsection{La variante instala la adenina de consenso del donador}
+\subsection{La variante aporta la adenina de consenso del donador}
 
 Contando coincidencias contra el consenso donador \texttt{MAG|GTRAGT}, la secuencia silvestre 1~nt
 aguas abajo de la variante lee \texttt{GGG|GTAGGT} y la mutante lee \texttt{GAG|GTAGGT}. La variante
@@ -433,17 +439,45 @@ misma aporta la adenina en la posición $-2$ --- una de las posiciones más cons
 donador --- sobre un dinucleótido GT intacto, con purinas en $+3$ y $+5$. Esto no requiere modelo, ni
 umbral, ni predictor.
 
-\subsection{El tamaño del pseudoexón predicho coincide con un experimento independiente}
+\subsection{El pseudoexón predicho reproduce coordenadas publicadas, posición por posición}
+\label{sec:coordenadas}
 
 La inferencia local de SpliceAI~\cite{jaganathan2019} sobre una ventana de 10~kb predice un donador
-críptico ganado en $+1$ ($0{,}194 \rightarrow 0{,}560$) y un aceptor críptico en $-89$
-($0{,}061 \rightarrow 0{,}271$). El pseudoexón implicado es de \textbf{91~pb}, idéntico al PE1b
-medido por minigén en Wang et al.~\cite{wang2025} --- predicción computacional y medición in vitro
-convergiendo por vías completamente independientes.
+críptico reforzado en $+1$ ($0{,}194 \rightarrow 0{,}560$) y un aceptor críptico en $-89$
+($0{,}061 \rightarrow 0{,}271$), lo que implica un pseudoexón de \textbf{91~pb}.
+
+Corradi et al.~\cite{corradi2023} midieron esta variante con un ensayo de midigén en 2023 y
+reportaron el transcrito resultante como \texttt{r.160\_161ins161-484\_161-394}. Convertido a
+offsets relativos a la variante, que está en \texttt{c.161-395}, esa variante de ARN publicada dice
+que el aceptor está en $395-484 = -89$, el donador en $395-394 = +1$, y el pseudoexón mide
+$484-394+1 = 91$~nt. \textbf{La predicción coincide con el experimento publicado en los dos bordes,
+no solo en la longitud.} Wang et al.~\cite{wang2025} confirmaron después el tamaño de 91~pb por
+minigén, como PE1b.
+
+Una tercera cohorte aporta una replicación de otro tipo. Huang et al.~\cite{huang2025} reportan
+delta scores de SpliceAI de $\mathrm{DS\_AG} = 0{,}21$ y $\mathrm{DS\_DG} = 0{,}37$ para esta
+variante; nuestra inferencia local da $0{,}271-0{,}061 = 0{,}210$ y $0{,}560-0{,}194 = 0{,}366$.
+Otro grupo, otro pipeline, otra cohorte, los mismos deltas a dos decimales.
 
 Pangolin~\cite{zeng2022}, una arquitectura distinta entrenada por otro grupo, ubica su máximo en
 \emph{exactamente} las mismas dos posiciones, con las posiciones vecinas en $\sim$1e$-$5. Un intento
 deliberado de romper este resultado durante la revisión adversarial falló.
+
+\needspace{5\baselineskip}
+\textbf{Esto es una validación, no un descubrimiento.} Lo declaramos sin rodeos: las coordenadas ya
+estaban en la literatura. Corradi et al.\ las publicaron dos años antes de que este proyecto
+empezara, y el proyecto no lo supo hasta que se armó la lista de referencias de este preprint
+(sección~\ref{sec:novedad}). Lo que la coincidencia establece es que el pipeline recupera desde
+secuencia sola un pseudoexón medido funcionalmente --- que es para lo que hace falta confiar en un
+pipeline de diseño, y que acá vale más de lo que habría valido una afirmación de novedad.
+
+\textbf{La variante refuerza un sitio que ya existía.} Nuestro propio score del donador silvestre es
+$0{,}194$, que no es cero, y Huang et al.~\cite{huang2025} consultaron SpliceVault y encontraron que
+los dos sitios crípticos se usan en transcriptomas normales, por debajo del 3\,\% de los
+transcritos. La formulación correcta es entonces que el cambio de base \emph{refuerza} un sitio
+críptico débil preexistente --- consistente con la observación de la adenina de consenso de más
+arriba --- y no que lo crea \emph{de novo}. Borradores anteriores de este trabajo decían ``crea'';
+era demasiado fuerte.
 
 \textbf{Lo que no se sigue.} SpliceAI no explica PE1c ni PE1d: sus aceptores implicados puntúan
 0,016 y 0,042, muy por debajo de cualquier umbral utilizable. El modelo da cuenta de uno de los tres
@@ -525,7 +559,7 @@ de refutar su propio argumento.
 \includegraphics[width=\linewidth]{figs/fig4_tissue_control.png}
 \caption{El control negativo. \textbf{Izquierda:} los tres juegos de pesos --- agnóstico de tejido,
 entrenado en retina, y un modelo GTEx que excluye deliberadamente la retina neural --- coinciden en
-que la variante crea el donador críptico, aunque discrepan en su fuerza absoluta. \textbf{Derecha:}
+que la variante refuerza el donador críptico, aunque discrepan en su fuerza absoluta. \textbf{Derecha:}
 el modelo de retina y el del tejido equivocado seleccionan conjuntos \emph{idénticos} de candidatos
 (11 de 78); el agnóstico de tejido difiere en uno. Como el tejido equivocado reproduce el resultado,
 la concordancia entre ellos no puede ser evidencia de biología robusta al tejido.}
@@ -569,8 +603,42 @@ sido leída por los seis revisores sin que ninguno la señalara.
 
 Lo reportamos porque es el mismo modo de falla que los otros tres: una afirmación que nunca se
 verificó contra su fuente, repetida hasta que la repetición la hizo parecer verificada. Es también la
-más barata de las cuatro de haber detectado --- una llamada a una API --- y la última que se
-encontró.
+más barata de las cuatro de haber detectado --- una llamada a una API --- y, en ese momento, la
+última que se encontró.
+
+\subsection{Y las coordenadas que creíamos nuestras estaban publicadas desde 2023}
+\label{sec:novedad}
+
+El mismo trabajo de bibliografía produjo un quinto caso, y el de mayor consecuencia. El proyecto
+tenía registrado que el paper fuente no reporta las posiciones de los sitios crípticos. Eso es
+cierto de Wang et al.~\cite{wang2025} y se verificó contra su texto. Después el proyecto lo
+generalizó a que \emph{nadie} las había reportado --- lo cual nunca se comprobó, y es falso.
+
+Una búsqueda de texto completo de la literatura por la cadena de la variante devuelve exactamente
+tres papers. El más antiguo, Corradi et al.~\cite{corradi2023}, midió la variante por ensayo de
+midigén en septiembre de 2023 y publicó el pseudoexón con sus dos bordes, en la notación citada en
+la sección~\ref{sec:coordenadas}. El tercero, Huang et al.~\cite{huang2025}, apareció en octubre de
+2025 con una cohorte taiwanesa y reporta los mismos deltas de SpliceAI que nosotros calculamos.
+
+De ahí se siguen dos cosas, y apuntan en direcciones opuestas. El anclaje externo es
+\textbf{más fuerte} de lo que habíamos afirmado --- coincidencia posición por posición con un ensayo
+funcional independiente, en vez de una coincidencia de longitud. Y la contribución mecanística es
+\textbf{menor}: ninguna de las coordenadas es nueva.
+
+Lo instructivo es por qué la verificación anterior no lo encontró. Se había corrido una búsqueda web
+y no devolvió nada --- pero buscaba el \emph{mecanismo} de la variante, no la cadena de la variante
+en texto completo. La conclusión que se sacó entonces --- ``ausencia de resultado no es prueba de
+ausencia, así que no afirmar novedad'' --- era la conclusión correcta por la razón equivocada: no
+era incertidumbre irreducible, era un paper que nadie había buscado bien. Ese reflejo de retener la
+afirmación es lo único que mantuvo el error fuera del registro publicado. \textbf{La consulta
+importa tanto como la fuente.}
+
+Una premisa sí sobrevivió a la búsqueda, y ahora está comprobada en vez de asumida: \textbf{no hay
+ningún oligonucleótido antisentido publicado contra esta variante}. Corradi et al.\ no mencionan
+ninguno. Sangermano et al.~\cite{sangermano2019} --- cuyo título promete corrección de defectos de
+splicing de \emph{ABCA4} con AONs, y que era por eso el paper más peligroso para esta premisa ---
+diseñaron AONs para otras seis variantes y ninguno para esta. Ninguna de las dos cohortes de 2025
+reporta trabajo de AON sobre ella.
 
 % =====================================================================
 \section{Los candidatos que sobreviven}
@@ -627,17 +695,26 @@ Se declara junto con cada resultado y no es omisible al comunicarlo.
 % =====================================================================
 \section{Discusión}
 
-La contribución científica de este trabajo es modesta y acotada: una explicación mecanística de un
-pseudoexón, confirmada computacionalmente, más un pipeline reproducible que produce una lista corta
-que nadie ha probado.
+La contribución científica de este trabajo es modesta y acotada, y un borrador más angosta de lo que
+la escribimos primero. El pipeline recupera, desde secuencia sola, un pseudoexón cuyos bordes ya
+habían sido establecidos por ensayo funcional en 2023~\cite{corradi2023}; no los descubre. Lo que
+queda es un pipeline reproducible que reconstruye un defecto de splicing medido y produce una lista
+corta que nadie ha probado.
 
 La contribución metodológica es, creemos, mayor. Un agente de IA produjo un sistema con disciplina de
 ingeniería real --- 224 tests, tres entornos documentados, archivos de procedencia, resultados
 previos a la corrección archivados --- y simultáneamente produjo conclusiones que no sobrevivieron al
 contacto con la revisión adversarial. Y algo central: \textbf{las fallas no fueron aritméticas}. Seis
 revisores no encontraron ningún error de cálculo. Fueron fallas de encuadre: qué métrica definir, qué
-control no correr, qué afirmación repetir sin comprobar --- y, como muestra la
-sección~\ref{sec:atribucion}, qué cita no abrir nunca.
+control no correr, qué afirmación repetir sin comprobar --- y, como muestran las
+secciones~\ref{sec:atribucion} y~\ref{sec:novedad}, qué cita no abrir nunca y qué búsqueda no
+correr nunca.
+
+Dos de esas fallas aparecieron recién al armar esta lista de referencias, después de que la revisión
+adversarial hubiera terminado. Ese momento es en sí mismo un resultado: \textbf{escribir las citas
+auditó las premisas del proyecto mejor de lo que lo habían hecho seis revisores especializados},
+porque fue el primer paso que obligó a resolver cada afirmación externa contra un identificador y no
+contra el recuerdo que el proyecto tenía de ella. Es además el paso más barato de todo el proyecto.
 
 Esa asimetría es el hallazgo que destacaríamos. Es probable que la investigación construida por
 agentes sea fuerte donde el trabajo es mecánico y débil donde requiere decidir qué te refutaría. La
@@ -680,6 +757,24 @@ Collin RWJ, Cheetham ME, Platenburg G, Swildens J.
 \emph{Antisense oligonucleotide therapy corrects splicing in the common Stargardt disease type
 1-causing variant ABCA4 c.5461-10T>C.} Mol Ther Nucleic Acids. 2023;31:674--688.
 \href{https://doi.org/10.1016/j.omtn.2023.02.020}{doi:10.1016/j.omtn.2023.02.020}
+
+\bibitem{corradi2023}
+Corradi Z, Khan M, Hitti-Malin R, Mishra K, Whelan L, Cornelis SS, et al.
+\emph{Targeted sequencing and in vitro splice assays shed light on ABCA4-associated retinopathies
+missing heritability.} HGG Adv. 2023;4(4):100237.
+\href{https://doi.org/10.1016/j.xhgg.2023.100237}{doi:10.1016/j.xhgg.2023.100237}
+
+\bibitem{huang2025}
+Huang YS, Lu WT, Chiu IH, Chien PM, Chen YA, Lin CY, Yang CH, Yang CM, Lin CW, Hsu JS, Chen PL,
+Chen TC. \emph{Hidden splicing variants in inherited retinal degeneration: discovery and functional
+insight.} Invest Ophthalmol Vis Sci. 2025;66(13):12.
+\href{https://doi.org/10.1167/iovs.66.13.12}{doi:10.1167/iovs.66.13.12}
+
+\bibitem{sangermano2019}
+Sangermano R, Garanto A, Khan M, Runhart EH, Bauwens M, Bax NM, et al.
+\emph{Deep-intronic ABCA4 variants explain missing heritability in Stargardt disease and allow
+correction of splice defects by antisense oligonucleotides.} Genet Med. 2019;21(8):1751--1760.
+\href{https://doi.org/10.1038/s41436-018-0414-9}{doi:10.1038/s41436-018-0414-9}
 
 \bibitem{jaganathan2019}
 Jaganathan K, Kyriazopoulou Panagiotopoulou S, McRae JF, et al.

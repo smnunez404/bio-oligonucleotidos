@@ -114,15 +114,16 @@ against it. We report a reproducible seven-module computational pipeline for in 
 splice-switching ASO candidates of \textbf{PMO} chemistry~\cite{summerton1997}, built end to end by
 an AI agent over six days, and then submitted to a panel of six independent adversarial reviewers.
 
-The pipeline reproduces two results with external anchors. First, the variant installs the
+The pipeline reproduces three results with external anchors. First, the variant supplies the
 $-2$ consensus adenine of the donor motif over an intact GT dinucleotide
 (\texttt{GGG|GTAGGT}~$\rightarrow$~\texttt{GAG|GTAGGT}), a model-free and threshold-free
 observation. Second, two independently trained neural predictors~\cite{jaganathan2019,zeng2022}
-place their maximum at exactly $+1$ and $-89$ relative to the variant, yielding a predicted
-pseudoexon of \textbf{91~bp} that matches the minigene measurement of Wang et al.~\cite{wang2025}
-exactly. On an independent published oligo-walk with measured efficacy~\cite{kaltak2023} the same
-scoring places the five known-effective AONs at ranks 1, 3, 4, 5 and 6 of 32
-($\mathrm{AUC}=0.974$).
+place their maximum at exactly $+1$ and $-89$ relative to the variant, implying a 91~bp pseudoexon
+--- which reproduces, \emph{position for position}, the boundaries that Corradi et
+al.~\cite{corradi2023} had already measured by midigene assay in 2023 and that Wang et
+al.~\cite{wang2025} later confirmed in size by minigene. Third, on an independent published
+oligo-walk with measured efficacy~\cite{kaltak2023} the same scoring places the five known-effective
+AONs at ranks 1, 3, 4, 5 and 6 of 32 ($\mathrm{AUC}=0.974$).
 
 We report the adversarial review as a primary result rather than as a limitations paragraph. The
 panel returned \emph{reject with invitation to major resubmission} and identified seven critical
@@ -131,6 +132,9 @@ calculation had propagated four modules upstream and generated a finding, a desi
 published conclusion; a negative control with deliberately wrong tissue reproduced the
 ``three-predictor agreement'' exactly, showing that agreement to be uninformative; and a claim
 repeated across six documents for four days had never been verified against the literature.
+Assembling this manuscript's reference list --- the last step before submission --- produced two
+more of the same kind: the source paper had been misattributed to the wrong first author for five
+days, and the pseudoexon coordinates the project treated as its own had been published in 2023.
 
 \textbf{No candidate has been synthesised or assayed.} We argue that for agent-built research the
 adversarial review is not optional quality control but part of the method, and we quantify why.
@@ -152,11 +156,14 @@ variants in \emph{ABCA4}. A relevant fraction of pathogenic alleles are not codi
 treat an intronic stretch as an exon --- a \emph{pseudoexon} --- and to introduce a premature
 termination codon.
 
-Wang et al.~\cite{wang2025} showed by minigene assay that \textbf{c.161-395G>A} activates three
-pseudoexons (PE1b 91~bp, PE1c 255~bp, PE1d 265~bp), with 76.4\,\% of the resulting mRNA incorrectly
-spliced. They assessed splicing effects with the SpliceAI web lookup and reported only that all
-variants exceeded a delta score of 0.2; they did not report cryptic site positions, pseudoexon
-coordinates, or a mechanistic account of the base change.
+The variant \textbf{c.161-395G>A} has been reported by three independent groups. Corradi et
+al.~\cite{corradi2023} first characterised it in 2023 by midigene assay in a European cohort,
+reporting 36\,\% residual wild-type RNA and the exact pseudoexon boundaries. Wang et
+al.~\cite{wang2025} showed by minigene that it activates three pseudoexons (PE1b 91~bp, PE1c
+255~bp, PE1d 265~bp), with 76.4\,\% of the resulting mRNA incorrectly spliced, and found it to be
+the most prevalent deep-intronic allele of their Chinese cohort. Huang et al.~\cite{huang2025}
+recovered it again in a Taiwanese cohort. None of the three reports an antisense oligonucleotide
+against it.
 
 Splice-switching ASOs bind the pre-mRNA by base complementarity and \textbf{sterically block}
 access to a splice site without degrading the transcript~\cite{dhuri2020}. No published or patented
@@ -406,7 +413,7 @@ exon skipping) and a different chemistry.
 
 These two do not depend on any metric we defined.
 
-\subsection{The variant installs the donor consensus adenine}
+\subsection{The variant supplies the donor consensus adenine}
 
 Counting matches against the donor consensus \texttt{MAG|GTRAGT}, the wild-type sequence 1~nt
 downstream of the variant reads \texttt{GGG|GTAGGT} and the mutant reads \texttt{GAG|GTAGGT}. The
@@ -414,17 +421,44 @@ variant itself supplies the adenine at position $-2$ --- one of the most conserv
 donor consensus --- over an intact GT dinucleotide, with purines at $+3$ and $+5$. This requires no
 model, no threshold and no predictor.
 
-\subsection{The predicted pseudoexon size matches an independent experiment}
+\subsection{The predicted pseudoexon reproduces published coordinates, position for position}
+\label{sec:coordinates}
 
-SpliceAI~\cite{jaganathan2019} local inference over a 10~kb window predicts a cryptic donor gained
-at $+1$ ($0.194 \rightarrow 0.560$) and a cryptic acceptor at $-89$ ($0.061 \rightarrow 0.271$). The
-implied pseudoexon is \textbf{91~bp}, identical to the PE1b measured by minigene in Wang et
-al.~\cite{wang2025} --- computational prediction and in vitro measurement converging by fully
-independent routes.
+SpliceAI~\cite{jaganathan2019} local inference over a 10~kb window predicts a cryptic donor
+strengthened at $+1$ ($0.194 \rightarrow 0.560$) and a cryptic acceptor at $-89$
+($0.061 \rightarrow 0.271$), implying a pseudoexon of \textbf{91~bp}.
+
+Corradi et al.~\cite{corradi2023} measured this variant with a midigene splice assay in 2023 and
+reported the resulting transcript as
+\texttt{r.160\_161ins161-484\_161-394}. Converted to offsets relative to the variant at
+\texttt{c.161-395}, that published RNA variant states the acceptor is at $395-484 = -89$, the donor
+at $395-394 = +1$, and the pseudoexon is $484-394+1 = 91$~nt. \textbf{The prediction matches the
+published experiment at both boundaries, not merely in length.} Wang et al.~\cite{wang2025}
+independently confirmed the 91~bp size by minigene, as PE1b.
+
+A third cohort provides a second kind of replication. Huang et al.~\cite{huang2025} report SpliceAI
+delta scores of $\mathrm{DS\_AG} = 0.21$ and $\mathrm{DS\_DG} = 0.37$ for this variant; our local
+inference gives $0.271-0.061 = 0.210$ and $0.560-0.194 = 0.366$. Different group, different
+pipeline, different cohort, same deltas to two decimals.
 
 Pangolin~\cite{zeng2022}, a different architecture trained by a different group, places its maximum
 at \emph{exactly} the same two positions, with neighbouring positions at $\sim$1e$-$5. A deliberate
 attempt to break this result during adversarial review failed.
+
+\needspace{5\baselineskip}
+\textbf{This is a validation, not a discovery.} We state plainly that the coordinates were already
+in the literature: Corradi et al.\ published them two years before this project began, and the
+project did not know it until the reference list for this preprint was assembled
+(Section~\ref{sec:novelty}). What the agreement establishes is that the pipeline recovers a
+functionally measured pseudoexon from sequence alone --- which is what a design pipeline needs to
+be trusted for, and which is worth more here than a novelty claim would have been.
+
+\textbf{The variant strengthens a site that already exists.} Our own wild-type donor score is
+$0.194$, which is not zero, and Huang et al.~\cite{huang2025} queried SpliceVault and found that
+both cryptic sites are used in normal transcriptomes, below 3\,\% of transcripts. So the correct
+statement is that the base change \emph{reinforces} a weak pre-existing cryptic site --- consistent
+with the consensus-adenine observation above --- and not that it creates one \emph{de novo}. Earlier
+drafts of this work said ``creates''; that was too strong.
 
 \textbf{What does not follow.} SpliceAI does not explain PE1c or PE1d: their implied acceptors score
 0.016 and 0.042, far below any usable threshold. The model accounts for one of three reported
@@ -503,8 +537,8 @@ run it, because nobody was looking for a way to refute their own argument.
 \centering
 \includegraphics[width=\linewidth]{figs/fig4_tissue_control.png}
 \caption{The negative control. \textbf{Left:} all three weight sets --- tissue-agnostic,
-retina-trained, and a GTEx model that deliberately excludes neural retina --- agree that the variant
-creates the cryptic donor, though they disagree on its absolute strength. \textbf{Right:} the
+retina-trained, and a GTEx model that deliberately excludes neural retina --- agree that the variant strengthens the cryptic
+donor, though they disagree on its absolute strength. \textbf{Right:} the
 retina model and the wrong-tissue model select \emph{identical} candidate sets (11 of 78); the
 tissue-agnostic model differs by one. Since the wrong tissue reproduces the result, agreement
 between them cannot be evidence of tissue-robust biology.}
@@ -547,7 +581,40 @@ already been read by the six reviewers without any of them flagging it.
 
 We report it because it is the same failure mode as the other three: a claim that was never checked
 against its source, repeated until repetition made it look verified. It is also the cheapest of the
-four to have caught --- one API call --- and the last one found.
+four to have caught --- one API call --- and, at the time, the last one found.
+
+\subsection{And the coordinates we thought were ours had been published in 2023}
+\label{sec:novelty}
+
+The same bibliography work produced a fifth instance, and the most consequential. The project had
+recorded that the source paper reports no cryptic site positions. That is true of Wang et
+al.~\cite{wang2025}, and was verified against their text. The project then generalised it to
+\emph{nobody} having reported them --- which was never checked, and is false.
+
+A full-text search of the literature for the variant string returns exactly three papers. The
+earliest, Corradi et al.~\cite{corradi2023}, measured the variant by midigene assay in September
+2023 and published the pseudoexon with both of its boundaries, in the notation quoted in
+Section~\ref{sec:coordinates}. The third, Huang et al.~\cite{huang2025}, appeared in October 2025
+with a Taiwanese cohort and reports the same SpliceAI deltas we compute.
+
+Two things follow, and they point in opposite directions. The external anchor is \textbf{stronger}
+than we had claimed --- position-for-position agreement with an independent functional assay rather
+than a coincidence of length. And the mechanistic contribution is \textbf{smaller}: none of the
+coordinates are new.
+
+The instructive part is why the earlier check missed it. A web search had been run and returned
+nothing --- but it searched for the \emph{mechanism} of the variant rather than for the variant
+string in full text. The conclusion drawn at the time --- ``absence of a result is not proof of
+absence, so do not claim novelty'' --- was the right conclusion reached for the wrong reason: this
+was not irreducible uncertainty, it was a paper nobody had looked for correctly. That reflex to
+withhold the claim is the only thing that kept the error out of the published record.
+\textbf{The query matters as much as the source.}
+
+One premise did survive the search, and is now checked rather than assumed: \textbf{no antisense
+oligonucleotide has been published against this variant}. Corradi et al.\ mention none. Sangermano
+et al.~\cite{sangermano2019} --- whose title promises AON correction of \emph{ABCA4} splice defects,
+and which was therefore the most dangerous paper for this premise --- designed AONs for six other
+variants and none for this one. Neither 2025 cohort reports AON work on it.
 
 % =====================================================================
 \section{The candidates that survive}
@@ -604,8 +671,10 @@ Stated with every result and not omissible when communicating it.
 % =====================================================================
 \section{Discussion}
 
-The scientific contribution of this work is modest and bounded: a mechanistic account of one
-pseudoexon, computationally confirmed, plus a reproducible pipeline that produces a shortlist no
+The scientific contribution of this work is modest and bounded, and one draft narrower than we
+first wrote it. The pipeline recovers, from sequence alone, a pseudoexon whose boundaries were
+established by functional assay in 2023~\cite{corradi2023}; it does not discover them. What remains
+is a reproducible pipeline that reconstructs a measured splicing defect and produces a shortlist no
 one has tested.
 
 The methodological contribution is, we think, larger. An AI agent produced a system with real
@@ -613,8 +682,14 @@ engineering discipline --- 224 tests, three documented environments, provenance 
 pre-correction results --- and simultaneously produced conclusions that did not survive contact with
 adversarial review. Crucially, \textbf{the failures were not arithmetic}. Six reviewers found no
 calculation error. They were failures of framing: which metric to define, which control not to run,
-which claim to repeat without checking --- and, as Section~\ref{sec:misattribution} shows, which
-citation never to open.
+which claim to repeat without checking --- and, as Sections~\ref{sec:misattribution}
+and~\ref{sec:novelty} show, which citation never to open and which search never to run.
+
+Two of those failures surfaced only while assembling this reference list, after the adversarial
+review had concluded. That timing is itself a result: \textbf{writing the citations audited the
+project's premises more effectively than six specialised reviewers had}, because it was the first
+step that forced every external claim to be resolved against an identifier rather than against the
+project's own memory of it. It is also the cheapest step in the whole project.
 
 That asymmetry is the finding we would emphasise. Agent-built research is likely to be strong where
 the work is mechanical and weak where it requires deciding what would refute you. Adversarial review
@@ -657,6 +732,24 @@ Collin RWJ, Cheetham ME, Platenburg G, Swildens J.
 \emph{Antisense oligonucleotide therapy corrects splicing in the common Stargardt disease type
 1-causing variant ABCA4 c.5461-10T>C.} Mol Ther Nucleic Acids. 2023;31:674--688.
 \href{https://doi.org/10.1016/j.omtn.2023.02.020}{doi:10.1016/j.omtn.2023.02.020}
+
+\bibitem{corradi2023}
+Corradi Z, Khan M, Hitti-Malin R, Mishra K, Whelan L, Cornelis SS, et al.
+\emph{Targeted sequencing and in vitro splice assays shed light on ABCA4-associated retinopathies
+missing heritability.} HGG Adv. 2023;4(4):100237.
+\href{https://doi.org/10.1016/j.xhgg.2023.100237}{doi:10.1016/j.xhgg.2023.100237}
+
+\bibitem{huang2025}
+Huang YS, Lu WT, Chiu IH, Chien PM, Chen YA, Lin CY, Yang CH, Yang CM, Lin CW, Hsu JS, Chen PL,
+Chen TC. \emph{Hidden splicing variants in inherited retinal degeneration: discovery and functional
+insight.} Invest Ophthalmol Vis Sci. 2025;66(13):12.
+\href{https://doi.org/10.1167/iovs.66.13.12}{doi:10.1167/iovs.66.13.12}
+
+\bibitem{sangermano2019}
+Sangermano R, Garanto A, Khan M, Runhart EH, Bauwens M, Bax NM, et al.
+\emph{Deep-intronic ABCA4 variants explain missing heritability in Stargardt disease and allow
+correction of splice defects by antisense oligonucleotides.} Genet Med. 2019;21(8):1751--1760.
+\href{https://doi.org/10.1038/s41436-018-0414-9}{doi:10.1038/s41436-018-0414-9}
 
 \bibitem{jaganathan2019}
 Jaganathan K, Kyriazopoulou Panagiotopoulou S, McRae JF, et al.
