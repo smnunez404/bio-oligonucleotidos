@@ -1,0 +1,775 @@
+% =====================================================================
+% Preprint (español) — diseño in silico de ASO para ABCA4 c.161-395G>A
+%
+% Compilar:  tectonic docs/preprint_es/preprint_es.tex
+% Figuras:   scripts/run-in-env.sh python pipeline/make_figures.py
+%            Se generan desde data/results/, así que texto y figura no pueden
+%            divergir. Las etiquetas están en español (ver pipeline/make_figures.py).
+%
+% Versión en inglés: docs/preprint_en/preprint_en.tex — mismo contenido.
+% =====================================================================
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[spanish,es-tabla,es-noquoting]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+
+\usepackage{microtype}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{bm}
+\usepackage{enumitem}
+\usepackage{caption}
+\usepackage{float}
+\usepackage[section]{placeins}
+\usepackage{needspace}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage[hidelinks]{hyperref}
+
+\hypersetup{colorlinks=true, linkcolor=blue!50!black, citecolor=blue!50!black,
+            urlcolor=blue!50!black,
+            pdftitle={Un pipeline construido por un agente para diseno in silico de ASO},
+            pdfauthor={Sergio Mauricio Nunez; Amyra Sanchez}}
+
+% --- composición: que ningún bloque se parta mal ----------------------
+\widowpenalty=10000
+\clubpenalty=10000
+\displaywidowpenalty=10000
+\brokenpenalty=10000
+\raggedbottom
+\sloppy
+\emergencystretch=3em
+\setlength{\parskip}{0.45em}
+\setlength{\parindent}{0pt}
+
+\newcommand{\brk}{\discretionary{}{}{}}
+
+% Los signos ¿ y ¡ literales salen mal con este motor (tectonic/XeTeX): U+00BF
+% cae en un slot equivocado de la fuente T1 y se imprime «£». Con las macros
+% salen bien. Verificado el 2026-08-02; si algún día se compila con pdflatex,
+% esto sigue siendo correcto, solo que innecesario.
+\newcommand{\qd}{\textquestiondown}
+\newcommand{\ed}{\textexclamdown}
+
+\titleformat{\section}{\large\bfseries}{\thesection}{0.8em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{0.8em}{}
+\titlespacing*{\section}{0pt}{1.4em}{0.5em}
+\titlespacing*{\subsection}{0pt}{1.0em}{0.35em}
+
+\captionsetup{font=small, labelfont=bf, width=0.94\linewidth}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small Diseño in silico de ASO para \emph{ABCA4} c.161-395G>A}
+\fancyhead[R]{\small Preprint}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+% =====================================================================
+% Portada — armada a mano en vez de \maketitle, que no lograba mantener
+% el bloque de autores dentro del ancho de texto.
+% =====================================================================
+\thispagestyle{empty}
+\begin{center}
+  \vspace*{0.6cm}
+
+  {\LARGE\bfseries Un pipeline construido por un agente para\\[0.15em]
+   el diseño in silico de oligonucleótidos antisentido,\\[0.25em]
+   y lo que seis revisores adversariales encontraron en él\par}
+
+  \vspace{0.8em}
+  {\large Informe metodológico sobre \emph{ABCA4} c.161-395G>A\par}
+
+  \vspace{1.6em}
+  {\large Sergio Mauricio Nu\~nez\qquad Amyra Sanchez\par}
+  \vspace{0.4em}
+  {\small \emph{YAIS Lab}\par}
+  \vspace{0.2em}
+  {\small \href{mailto:mauricio.nunez@yaislab.org}{mauricio.nunez@yaislab.org}\par}
+
+  \vspace{0.9em}
+  {\small 2 de agosto de 2026 \quad\textbullet\quad Preprint, sin revisión por pares\par}
+\end{center}
+
+\vspace{0.8em}
+
+\begin{center}
+\begin{minipage}{0.88\linewidth}\small\itshape
+La implementación, la ejecución del pipeline y la redacción estuvieron a cargo de un
+agente de IA (Claude, Anthropic) bajo supervisión de los autores. La
+sección~\ref{sec:procedencia} declara explícitamente qué decisiones fueron de los
+autores y cuáles no.
+\end{minipage}
+\end{center}
+
+\vspace{1.2em}
+
+\begin{center}
+\begin{minipage}{0.92\linewidth}
+{\bfseries\large Resumen}\\[0.4em]
+\small
+La variante intrónica profunda \textbf{\emph{ABCA4} c.161-395G>A} activa un pseudoexón aberrante
+(PE1b, 91~pb) y fue el alelo intrónico profundo más frecuente en una cohorte china de enfermedad de
+Stargardt publicada~\cite{wang2025}. No hay ningún oligonucleótido antisentido (ASO) publicado ni
+patentado contra ella. Presentamos un pipeline computacional reproducible de siete módulos para el
+diseño in silico de candidatos ASO de conmutación de splicing con química \textbf{PMO}~\cite{summerton1997},
+construido de punta a punta por un agente de IA en seis días y sometido después a un panel de seis
+revisores adversariales independientes.
+
+El pipeline reproduce dos resultados con anclaje externo. Primero, la variante instala la adenina de
+consenso en $-2$ del motivo donador sobre un dinucleótido GT intacto
+(\texttt{GGG|GTAGGT}~$\rightarrow$~\texttt{GAG|GTAGGT}), una observación sin modelo y sin umbral.
+Segundo, dos predictores neuronales entrenados de forma independiente~\cite{jaganathan2019,zeng2022}
+ubican su máximo exactamente en $+1$ y $-89$ respecto de la variante, lo que implica un pseudoexón
+de \textbf{91~pb} que coincide exactamente con la medición por minigén de Wang et
+al.~\cite{wang2025}. Sobre un oligo-walk publicado independiente con eficacia
+medida~\cite{kaltak2023}, el mismo puntaje ubica los cinco AONs eficaces conocidos en las posiciones
+1, 3, 4, 5 y 6 de 32 ($\mathrm{AUC}=0{,}974$).
+
+Reportamos la revisión adversarial como resultado primario y no como un párrafo de limitaciones. El
+panel devolvió \emph{rechazo con invitación a resubmisión mayor} e identificó siete problemas
+críticos. Corregirlos cambió las conclusiones: un error de orientación de hebra en el cálculo de la
+temperatura de fusión se había propagado cuatro módulos aguas arriba y había generado un hallazgo,
+un registro de decisión y una conclusión publicada; un control negativo con el tejido
+deliberadamente equivocado reprodujo exactamente la ``concordancia entre tres predictores'', lo que
+muestra que esa concordancia no informa; y una afirmación repetida en seis documentos durante cuatro
+días nunca se había verificado contra la literatura.
+
+\textbf{Ningún candidato fue sintetizado ni ensayado.} Sostenemos que, para investigación construida
+por agentes, la revisión adversarial no es control de calidad opcional sino parte del método, y
+cuantificamos por qué.
+\end{minipage}
+\end{center}
+
+\clearpage
+
+% =====================================================================
+\tableofcontents
+\clearpage
+
+% =====================================================================
+\section{Motivación}
+
+La enfermedad de Stargardt tipo~1 es la distrofia macular hereditaria más común, causada por
+variantes bialélicas en \emph{ABCA4}. Una fracción relevante de los alelos patogénicos no son
+variantes codificantes sino \textbf{variantes intrónicas profundas} que activan sitios de splicing
+crípticos, llevando al espliceosoma a tratar un tramo intrónico como si fuera un exón --- un
+\emph{pseudoexón} --- e introducir un codón de terminación prematuro.
+
+Wang et al.~\cite{wang2025} mostraron por ensayo de minigén que \textbf{c.161-395G>A} activa tres
+pseudoexones (PE1b 91~pb, PE1c 255~pb, PE1d 265~pb), con el 76,4\,\% del ARNm resultante
+incorrectamente spliceado. Evaluaron los efectos sobre el splicing con la consulta web de SpliceAI y
+solo reportaron que todas las variantes superaban un delta score de 0,2; no reportaron posiciones de
+los sitios crípticos, coordenadas de los pseudoexones ni una explicación mecanística del cambio de
+base.
+
+Los ASO de conmutación de splicing se unen al pre-ARNm por complementariedad de bases y
+\textbf{bloquean estéricamente} el acceso a un sitio de splicing sin degradar el
+transcrito~\cite{dhuri2020}. Ningún ASO publicado o patentado apunta a esta variante --- lo que
+motiva el trabajo, pero también significa que \textbf{no hay control positivo} con el cual validar
+un pipeline de diseño de punta a punta. La sección~\ref{sec:calibracion} describe el sustituto
+parcial que usamos.
+
+% =====================================================================
+\section{Procedencia y división del juicio}
+\label{sec:procedencia}
+
+Lo declaramos antes de los métodos porque condiciona cómo debe leerse el resto.
+
+La implementación, la ejecución del pipeline y la redacción las produjo un agente de IA. Las
+siguientes fueron decisiones de los autores, no del agente:
+
+\begin{itemize}[nosep, leftmargin=1.4em]
+  \item \textbf{La química.} PMO se eligió como decisión de alcance, en contra del precedente de la
+        literatura retinal (2$'$-MOE/PS), y quedó documentada con sus costos.
+  \item \textbf{Encargar la revisión adversarial}, con el razonamiento explícito de que un agente no
+        puede auditar el trabajo que produjo.
+  \item \textbf{Cuestionar las afirmaciones del agente.} Tres de los errores de mayor impacto
+        salieron a la luz porque los autores preguntaron, no porque el agente los detectara --- igual
+        que el hecho de que los parámetros de campo de fuerza para PMO sí
+        existen~\cite{maksudov2023}, después de que el agente afirmara que no.
+\end{itemize}
+
+Consideramos esta declaración un requisito metodológico y no un agradecimiento.
+
+% =====================================================================
+\section{El pipeline}
+\label{sec:pipeline}
+
+Siete módulos, cada uno con su runner reproducible y sus limitaciones declaradas
+(Tabla~\ref{tab:modulos}, Figura~\ref{fig:embudo}).
+
+\begin{table}[htbp]
+\centering
+\small
+\setlength{\tabcolsep}{4.5pt}
+\begin{tabular}{@{}clll@{}}
+\toprule
+\textbf{\#} & \textbf{Módulo} & \textbf{Pregunta} & \textbf{Resultado} \\
+\midrule
+1  & Secuencia          & \qd Dónde está la variante?            & Coordenada confirmada por dos vías~\cite{freeman2018} \\
+2  & Oligo-walk         & \qd Qué ventanas?                      & 381 candidatos \\
+3  & Filtros heurísticos& \qd Oligos viables?                    & 381 $\rightarrow$ 276 \\
+4  & Termodinámica      & \qd Se unen bien, son accesibles?      & 276 $\rightarrow$ 78 \\
+5  & Off-target         & \qd Se parecen a otros genes?          & 78 anotados por severidad \\
+6  & Splicing neuronal  & \qd El sitio falso es real?            & Donador $+1$, aceptor $-89$ \\
+6b & Enmascarado del ASO& \qd Cada parche lo apaga?              & 12 anulan el pseudoexón \\
+7  & Ranking            & \qd Cuál sintetizar primero?           & Frente de Pareto: 3 \\
+\bottomrule
+\end{tabular}
+\caption{Los siete módulos y qué responde cada uno. Cada fila tiene un comando de regeneración en el
+README del repositorio.}
+\label{tab:modulos}
+\end{table}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.9\linewidth]{figs/fig1_funnel.png}
+\caption{Embudo de candidatos con los números vigentes. Las dos etapas verdes son las que requieren
+inferencia neuronal; todo lo anterior es aritmética de secuencia. El ancho de cada banda escala como
+$n^{0{,}38}$ para que las últimas etapas sigan siendo visibles.}
+\label{fig:embudo}
+\end{figure}
+
+\subsection{Cómo se le representa un ASO a un predictor de splicing}
+\label{sec:enmascarado}
+
+Los predictores de splicing toman una sola hebra de secuencia y no tienen representación de un
+ligando unido. Un PMO no corta ni modifica el ARN --- lo tapa. Por eso reemplazamos la ventana del
+ASO por \texttt{N}, que la codificación one-hot de ambas familias de predictores mapea al vector
+nulo: ``acá no hay información de secuencia legible''. Es un proxy directo del bloqueo estérico.
+
+Sea $x$ la secuencia del pre-ARNm mutante, $c$ una ventana candidata y $\mathcal{M}(x,c)$ la misma
+secuencia con cada base dentro de $c$ reemplazada por \texttt{N}. Para un predictor $p$ y un sitio de
+splicing $s$, escribimos $S_p(\cdot,s)$ para el score que asigna en esa posición. La cantidad que el
+pipeline usa efectivamente es la \emph{fracción de señal retenida}:
+
+\begin{equation}
+r_p(c,s) \;=\; \frac{S_p\bigl(\mathcal{M}(x,c),\,s\bigr)}{S_p(x,s)}
+\label{eq:retencion}
+\end{equation}
+
+$r_p = 1$ significa que la máscara no cambió nada; $r_p = 0$, que el sitio desapareció. Expresar el
+efecto como cociente y no como diferencia es lo que hace al criterio comparable entre predictores
+cuyas escalas de score difieren.
+
+Se considera que un candidato \textbf{anula el pseudoexón} cuando apaga \emph{al menos uno} de sus
+dos bordes --- el donador críptico $d$ en $+1$ o el aceptor críptico $a$ en $-89$ --- en
+\emph{todos} los predictores:
+
+\begin{equation}
+V(c) = \text{anula} \iff \forall p \in P:\;
+\min_{s \in \{d,\,a\}} r_p(c,s) \;\le\; \tau,
+\qquad \tau = 0{,}25
+\label{eq:veredicto}
+\end{equation}
+
+La disyunción entre bordes es una afirmación biológica y no una comodidad: un pseudoexón necesita que
+se reconozcan sus dos bordes, así que quitar cualquiera de los dos alcanza para desarmarlo. El umbral
+$\tau$ es una decisión de diseño declarada y no está calibrada contra experimento.
+
+Se descartaron dos alternativas: mutar la ventana introduce motivos espurios, y recortarla desplaza
+todas las coordenadas aguas abajo. Cabe notar que la propia rutina de inferencia de los predictores
+ya rellena con \texttt{"N"}$\times$5000 a cada lado, así que los bloques de \texttt{N} son la
+convención operativa de estos modelos y no una entrada inventada.
+
+\subsection{Termodinámica, y el punto exacto donde la química no encaja}
+\label{sec:termo}
+
+El Módulo~4 estima la temperatura de fusión del dúplex ASO:ARN con el modelo de vecino más
+cercano~\cite{santalucia1998}, usando la tabla de híbridos ARN/ADN de Sugimoto et
+al.~\cite{sugimoto1995} tal como está implementada en Biopython~\cite{cock2009}:
+
+\begin{equation}
+T_m \;=\; \frac{\Delta H^\circ}{\;\Delta S^\circ + R\,\ln\!\bigl(C_T/x\bigr)\;} \;-\; 273{,}15
+\label{eq:tm}
+\end{equation}
+
+con la entalpía y la entropía acumuladas sobre pasos dinucleotídicos consecutivos de la secuencia
+$\bm{s}=s_1s_2\ldots s_n$,
+
+\begin{equation}
+\Delta H^\circ = \Delta H^\circ_{\mathrm{init}} + \sum_{i=1}^{n-1} \Delta H^\circ(s_i s_{i+1}),
+\qquad
+\Delta S^\circ = \Delta S^\circ_{\mathrm{init}} + \sum_{i=1}^{n-1} \Delta S^\circ(s_i s_{i+1}).
+\label{eq:nn}
+\end{equation}
+
+\needspace{5\baselineskip}
+\textbf{La tabla es asimétrica, y eso es lo que se rompió.} Para un dúplex híbrido el juego de
+parámetros está indexado por la hebra de \textbf{ARN}, de modo que
+$\Delta H^\circ(\mathtt{AG/TT}) \neq \Delta H^\circ(\mathtt{TT/AG})$. En los valores tabulados estos
+difieren en más de un factor de dos ($-3{,}96$ frente a $-10{,}38$~kcal\,mol$^{-1}$; $-11{,}6$
+frente a $-31{,}8$~cal\,mol$^{-1}$K$^{-1}$). Pasar el ASO donde se esperaba la diana de ARN no
+produce entonces una perturbación pequeña --- produce otro número. La
+sección~\ref{sec:bugtm} reporta lo que eso costó.
+
+\textbf{Dos sesgos que no se cancelan.} La ecuación~\ref{eq:tm} supone un esqueleto cargado, y la
+corrección salina que se le aplica encima supone $\sim$50~mM de Na$^+$. El esqueleto de un PMO es
+neutro~\cite{summerton1997}, y las mediciones publicadas de fusión de PMO se hacen cerca de 1,0~M de
+NaCl. De forma independiente, se reporta que los enlaces fosforodiamidato \emph{estabilizan} el
+dúplex~\cite{maksudov2023}. Los dos efectos empujan la estimación en el mismo sentido: el proxy
+\textbf{subestima} la temperatura de fusión real. Por eso hoy $T_m$ se reporta como anotación y no
+se usa como filtro (sección~\ref{sec:recuperado}).
+
+\subsection{Off-target}
+
+El Módulo~5 busca cada candidato contra el transcriptoma humano con BLAST+~\cite{camacho2009} y
+registra $L(c)$, el tramo contiguo perfecto más largo contra cualquier transcrito que no sea
+\emph{ABCA4}. La severidad se anota, no se usa como gate: para una química de bloqueo estérico, a
+diferencia de un gapmer que recluta RNasa~H, la homología solo importa según dónde
+caiga~\cite{dhuri2020}. Dos resultados publicados acotan cuánto puede confiarse en esta medición:
+ningún rasgo de secuencia por sí solo predice bien el mis-splicing off-target real, y el propio
+BLAST penaliza gaps e ignora el apareamiento oscilante G:U~\cite{scharner2020}; y el número de
+sitios complementarios crece abruptamente con la tolerancia a mismatches que se
+permita~\cite{yoshida2018}.
+
+\subsection{Ranking: por qué un frente de Pareto y no un puntaje ponderado}
+\label{sec:pareto}
+
+Las tres dimensiones del ranking tienen unidades incomparables. Todas se escriben de modo que ``más
+alto es mejor'':
+
+\begin{align}
+f_1(c) &= 1 - \frac{1}{|P|}\sum_{p \in P} \min_{s \in \{d,a\}} r_p(c,s)
+        && \text{fuerza de bloqueo} \label{eq:f1}\\[0.2em]
+f_2(c) &= -\,L(c)
+        && \text{seguridad off-target} \label{eq:f2}\\[0.2em]
+f_3(c) &= \tfrac{1}{2}\bigl(P_{\mathrm{acc}}(c) + P_{\mathrm{hd}}(c)\bigr)
+        && \text{calidad termodinámica} \label{eq:f3}
+\end{align}
+
+donde $P_{\mathrm{acc}}$ y $P_{\mathrm{hd}}$ son los percentiles dentro de la cohorte de la
+accesibilidad de la ventana diana y de la no-autodimerización, calculados con
+ViennaRNA~\cite{lorenz2011}.
+
+Promediar $f_1$, $f_2$ y $f_3$ en un solo puntaje exige postular una tasa de cambio --- cuántos pares
+de bases de homología off-target valen 0,01 de fuerza de bloqueo --- que \textbf{ningún dato de este
+proyecto respalda}, precisamente porque no hay control positivo contra el cual calibrarla. Un frente
+de Pareto no necesita esa tasa. Escribiendo $\bm{f}(c) = (f_1,f_2,f_3)$, el candidato $a$
+\emph{domina} a $b$ cuando
+
+\begin{equation}
+a \succ b
+\iff
+\bigl(\forall i:\; f_i(a) \ge f_i(b)\bigr)
+\;\wedge\;
+\bigl(\exists j:\; f_j(a) > f_j(b)\bigr),
+\label{eq:dominancia}
+\end{equation}
+
+y el frente es el conjunto de candidatos a los que nadie domina, restringido a los que pasan la
+puerta de elegibilidad $V(c)=\text{anula}$ de la ecuación~\ref{eq:veredicto}:
+
+\begin{equation}
+\mathcal{F} \;=\; \bigl\{\, a \in E \;:\; \nexists\, b \in E,\; b \succ a \,\bigr\},
+\qquad
+E = \{\,c : V(c) = \text{anula}\,\}.
+\label{eq:frente}
+\end{equation}
+
+Devuelve un conjunto y no un ganador, que es la salida honesta.
+
+\needspace{6\baselineskip}
+\textbf{La convención que hay que declarar.} Colapsar accesibilidad y no-autodimerización en un solo
+promedio en la ecuación~\ref{eq:f3} \emph{es} una ponderación implícita 50/50 --- exactamente lo que
+esta sección dice evitar. Lo hacemos igual, por una razón medida y no estética: manteniéndolas como
+dimensiones separadas, el frente pasa de 3 a \textbf{11 de los 12} candidatos elegibles, y un frente
+que casi no descarta nada casi no informa nada. El código reporta ese número para que la decisión
+quede a la vista en lugar de enterrada.
+
+% =====================================================================
+\section{Calibración contra un oligo-walk independiente}
+\label{sec:calibracion}
+
+Como no existe ningún ASO para esta variante, el pipeline se aplicó sin cambios a otra variante de
+\emph{ABCA4} que \emph{sí} tiene eficacia medida: c.5461-10T>C en el intrón~38, para la cual Kaltak
+et al.~\cite{kaltak2023} publicaron un walk de 32 AONs y reportaron cinco como eficaces, uno de los
+cuales se convirtió en el candidato clínico QR-1011. El módulo de calibración es deliberadamente
+paralelo al pipeline principal y no lo toca.
+
+Puntuar los 32 AONs con el mismo $\Delta$ de enmascarado de la sección~\ref{sec:enmascarado} y
+preguntar dónde caen los eficaces conocidos da un estadístico de Mann--Whitney. Con $K$ el conjunto
+de eficaces conocidos y $O$ el resto,
+
+\begin{equation}
+U = \sum_{k \in K} \sum_{o \in O}
+\Bigl[\mathbf{1}\bigl(\delta_k > \delta_o\bigr) + \tfrac{1}{2}\,\mathbf{1}\bigl(\delta_k = \delta_o\bigr)\Bigr],
+\qquad
+\mathrm{AUC} = \frac{U}{|K|\,|O|}.
+\label{eq:auc}
+\end{equation}
+
+Los cinco AONs eficaces conocidos ocupan las posiciones \textbf{1, 3, 4, 5 y 6 de 32}, con QR-1011
+tercero: $\mathrm{AUC} = 0{,}974$. Repetir toda la calibración con el predictor entrenado en
+retina~\cite{riepe2025} da las mismas cinco posiciones y $\mathrm{AUC} = 0{,}970$, así que la
+separación no es un artefacto de un modelo. Un análisis de sensibilidad que quita los cuatro AONs que
+cubren el aceptor del exón~39 --- donde anular el sitio es trivialmente malo --- deja 28 AONs y
+$\mathrm{AUC} > 0{,}95$.
+
+\textbf{Qué habilita y qué no.} Muestra que el puntaje no es arbitrario: discrimina AONs con eficacia
+medida sobre una diana para la que nunca fue ajustado. No se transfiere a c.161-395G>A, que es otro
+intrón, otro mecanismo (inclusión de pseudoexón en vez de salto de exón) y otra química.
+
+% =====================================================================
+\section{Resultados con anclaje externo}
+
+Estos dos no dependen de ninguna métrica definida por nosotros.
+
+\subsection{La variante instala la adenina de consenso del donador}
+
+Contando coincidencias contra el consenso donador \texttt{MAG|GTRAGT}, la secuencia silvestre 1~nt
+aguas abajo de la variante lee \texttt{GGG|GTAGGT} y la mutante lee \texttt{GAG|GTAGGT}. La variante
+misma aporta la adenina en la posición $-2$ --- una de las posiciones más conservadas del consenso
+donador --- sobre un dinucleótido GT intacto, con purinas en $+3$ y $+5$. Esto no requiere modelo, ni
+umbral, ni predictor.
+
+\subsection{El tamaño del pseudoexón predicho coincide con un experimento independiente}
+
+La inferencia local de SpliceAI~\cite{jaganathan2019} sobre una ventana de 10~kb predice un donador
+críptico ganado en $+1$ ($0{,}194 \rightarrow 0{,}560$) y un aceptor críptico en $-89$
+($0{,}061 \rightarrow 0{,}271$). El pseudoexón implicado es de \textbf{91~pb}, idéntico al PE1b
+medido por minigén en Wang et al.~\cite{wang2025} --- predicción computacional y medición in vitro
+convergiendo por vías completamente independientes.
+
+Pangolin~\cite{zeng2022}, una arquitectura distinta entrenada por otro grupo, ubica su máximo en
+\emph{exactamente} las mismas dos posiciones, con las posiciones vecinas en $\sim$1e$-$5. Un intento
+deliberado de romper este resultado durante la revisión adversarial falló.
+
+\textbf{Lo que no se sigue.} SpliceAI no explica PE1c ni PE1d: sus aceptores implicados puntúan
+0,016 y 0,042, muy por debajo de cualquier umbral utilizable. El modelo da cuenta de uno de los tres
+pseudoexones reportados, y lo declaramos en vez de omitirlo.
+
+\subsection{Qué ventanas apagan el pseudoexón}
+
+Aplicar las ecuaciones~\ref{eq:retencion} y~\ref{eq:veredicto} a los 78 candidatos que llegan al
+Módulo~6b da la Figura~\ref{fig:enmascarado}. Aparecen dos mecanismos distintos, y no son
+intercambiables.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{figs/fig2_masking.png}
+\caption{Efecto de enmascarar cada ventana candidata sobre la señal del donador críptico, como
+fracción del basal sin máscara (ecuación~\ref{eq:retencion}). Las ventanas que cubren el donador en
+$+1$ lo llevan a cero. Nueve candidatos centrados cerca de $-110$ anulan el \emph{aceptor} sin cubrir
+el donador, y acá se ven solo como una caída parcial de la señal del donador --- lo que evalúa la
+ecuación~\ref{eq:veredicto} es su retención del aceptor. La línea de trazos es el umbral declarado
+$\tau = 0{,}25$.}
+\label{fig:enmascarado}
+\end{figure}
+
+% =====================================================================
+\section{La revisión adversarial como resultado}
+\label{sec:revision}
+
+Seis revisores independientes --- biología del splicing, estadística, reproducibilidad, terapéutica
+de ASO, integridad del código y un equipo rojo hostil --- recibieron un dossier con cada afirmación,
+su nivel de evidencia y su comando de regeneración, más reglas de juego explícitas que exigían que
+cada objeción citara un archivo, una línea o un número.
+
+El veredicto fue \emph{rechazo con invitación a resubmisión mayor}. Se plantearon siete problemas
+críticos. Cuatro se verificaron de forma independiente antes de aceptarlos. La
+Figura~\ref{fig:impacto} resume qué cambió; las subsecciones dan el mecanismo de cada uno.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{figs/fig3_review_impact.png}
+\caption{Qué cambió la revisión. \textbf{Izquierda:} candidatos que sobreviven al Módulo~4 y, de
+esos, cuántos anulan el pseudoexón. \textbf{Derecha:} candidatos que anulan el aceptor críptico sin
+cubrirlo --- la observación que había motivado el criterio de veredicto del proyecto. Existía antes
+de la revisión por la razón equivocada (un bug), desapareció por completo al corregirlo, y reapareció
+sobre base firme cuando $T_m$ dejó de usarse como filtro.}
+\label{fig:impacto}
+\end{figure}
+
+\subsection{Un bug del Módulo 4 que viajó cuatro módulos aguas arriba}
+\label{sec:bugtm}
+
+\texttt{Bio.SeqUtils.\brk MeltingTemp.\brk Tm\_NN} con la tabla \texttt{R\_DNA\_NN1} documenta que el
+argumento debe ser la hebra de \textbf{ARN}; el código pasaba el ASO. Como se muestra en la
+sección~\ref{sec:termo}, la tabla es asimétrica, así que el orden cambia el número.
+
+Corregirlo movió el embudo del Módulo~4 de \textbf{44 a 16} candidatos, con solo 6 en común. Más
+grave: los siete candidatos que anulaban el aceptor \emph{sin cubrirlo} --- la observación que había
+motivado el criterio de veredicto del proyecto, su propio registro de decisión y una conclusión
+publicada sobre concordancia entre predictores --- \textbf{no sobrevivieron}. Un defecto en el módulo
+más barato había generado un hallazgo cuatro módulos más abajo: no un número equivocado, sino una
+afirmación equivocada sobre biología.
+
+\subsection{Un control de tejido equivocado que disolvió un argumento}
+
+El proyecto había reportado que tres predictores entrenados de forma independiente, uno de ellos
+específico de retina~\cite{riepe2025}, seleccionaban exactamente el mismo conjunto de candidatos, y
+presentaba eso como validación cruzada. El panel propuso el control que faltaba: correr un modelo
+entrenado \emph{deliberadamente} sobre el tejido equivocado --- el juego de pesos GTEx publicado
+junto a Retina-SpliceAI, que excluye la retina neural (Figura~\ref{fig:tejido}).
+
+\textbf{El tejido equivocado selecciona los candidatos del modelo de retina uno por uno}: ambos
+devuelven los mismos 11 de 78, candidato por candidato, y no meramente la misma cantidad. La
+concordancia refleja entonces arquitectura compartida y anotaciones de entrenamiento compartidas, no
+biología robusta al tejido. El control costó seis minutos de CPU y estaba disponible desde que se
+instalaron los pesos; nadie en el proyecto lo había corrido, porque nadie estaba buscando una forma
+de refutar su propio argumento.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{figs/fig4_tissue_control.png}
+\caption{El control negativo. \textbf{Izquierda:} los tres juegos de pesos --- agnóstico de tejido,
+entrenado en retina, y un modelo GTEx que excluye deliberadamente la retina neural --- coinciden en
+que la variante crea el donador críptico, aunque discrepan en su fuerza absoluta. \textbf{Derecha:}
+el modelo de retina y el del tejido equivocado seleccionan conjuntos \emph{idénticos} de candidatos
+(11 de 78); el agnóstico de tejido difiere en uno. Como el tejido equivocado reproduce el resultado,
+la concordancia entre ellos no puede ser evidencia de biología robusta al tejido.}
+\label{fig:tejido}
+\end{figure}
+
+\subsection{Una afirmación repetida cuatro días sin verificar}
+
+La afirmación de que no existen parámetros termodinámicos de vecino más cercano para PMO se propagó
+por seis documentos a partir de una sola inferencia no verificada. Comprobarla encontró: la
+afirmación es esencialmente correcta para PMO, pero el modelo NN \emph{sí} está documentado como
+aplicable a oligómeros sin carga; \emph{sí} existen parámetros para 2$'$-MOE/PS~\cite{park2025}, la
+química de la literatura retinal real; y los parámetros de campo de fuerza para PMO \emph{sí}
+existen~\cite{maksudov2023}. Además, la evidencia experimental muestra que los enlaces
+fosforodiamidato \emph{estabilizan} el dúplex, así que el proxy \textbf{subestima} la temperatura de
+fusión real --- un sesgo en la misma dirección que la corrección salina inaplicable, de modo que los
+dos se acumulan en vez de cancelarse.
+
+\subsection{Una corrección que recuperó lo que el filtro había escondido}
+\label{sec:recuperado}
+
+Como el umbral de temperatura de fusión no podía interpretarse para esta química, se lo convirtió de
+filtro en anotación --- siguiendo un precedente que el proyecto ya había sentado para la severidad
+off-target. El embudo pasó de 16 a \textbf{78} candidatos.
+
+Los candidatos de solo-aceptor \textbf{reaparecieron}: nueve de ellos, con temperaturas de fusión
+proxy de 36,5--40,1\,$^\circ$C, todas por debajo del umbral descartado. El mecanismo era real; el
+cálculo con bug los había admitido por la razón equivocada y el gate corregido los había escondido
+por completo. El frente de Pareto final vuelve a los mismos tres candidatos del análisis original,
+ahora por una vía defendible.
+
+\subsection{Una cita mal atribuida, encontrada al armar esta bibliografía}
+\label{sec:atribucion}
+
+Al compilar la lista de referencias de este preprint, la fuente de la medición por minigén se
+verificó contra Crossref y PubMed Central por primera vez. El DOI y el identificador PMC que el
+proyecto tenía registrados eran correctos; el nombre del autor no. El trabajo es
+\textbf{Wang et al.}~\cite{wang2025} --- no hay ningún autor apellidado Peng en él. La atribución
+estaba mal en 19 lugares del repositorio y en 15 documentos del vault, durante cinco días, y ya había
+sido leída por los seis revisores sin que ninguno la señalara.
+
+Lo reportamos porque es el mismo modo de falla que los otros tres: una afirmación que nunca se
+verificó contra su fuente, repetida hasta que la repetición la hizo parecer verificada. Es también la
+más barata de las cuatro de haber detectado --- una llamada a una API --- y la última que se
+encontró.
+
+% =====================================================================
+\section{Los candidatos que sobreviven}
+\label{sec:candidatos}
+
+Doce de los 78 candidatos anulan el pseudoexón según la ecuación~\ref{eq:veredicto} en ambos
+predictores. Tres son no dominados según la ecuación~\ref{eq:dominancia} (Tabla~\ref{tab:frente}).
+
+\begin{table}[htbp]
+\centering
+\small
+\begin{tabular}{@{}lccccc@{}}
+\toprule
+\textbf{Candidato} & \textbf{Ventana} & \textbf{Bordes} & $f_1$ & $f_2$ & $f_3$ \\
+ & (rel. a la variante) & anulados & bloqueo & off-target & termo \\
+\midrule
+\texttt{cand\_5992} & $-8$ a $+12$    & donador + aceptor & 1,000 & $-15$ & \phantom{0}8,45 \\
+\texttt{cand\_5998} & $-2$ a $+18$    & donador + aceptor & 1,000 & $-16$ & \phantom{0}9,75 \\
+\texttt{cand\_5882} & $-118$ a $-98$  & solo aceptor      & 0,994 & $-15$ & 70,75 \\
+\bottomrule
+\end{tabular}
+\caption{El frente de Pareto. Cada candidato es de 20~nt. $f_2$ es el negativo del tramo contiguo
+perfecto más largo contra otro transcrito (ecuación~\ref{eq:f2}), así que $-15$ es más seguro que
+$-16$. Nótese el compromiso que expone el frente: los dos que mejor bloquean son los \emph{peores}
+en propiedades fisicoquímicas, y el de solo-aceptor es al revés. Nada en este proyecto determina qué
+compromiso es preferible --- esa es una decisión humana, y por eso el pipeline devuelve tres filas y
+no una.}
+\label{tab:frente}
+\end{table}
+
+\textbf{Ningún candidato fue sintetizado, transfectado ni ensayado.} La Tabla~\ref{tab:frente} es un
+orden de prioridad de síntesis, condicionado a que alguien decida sintetizar algo.
+
+% =====================================================================
+\section{Lo que este pipeline no hace}
+
+Se declara junto con cada resultado y no es omisible al comunicarlo.
+
+\begin{itemize}[nosep, leftmargin=1.4em]
+  \item \textbf{Ninguna validación experimental.} Ningún ASO sintetizado ni ensayado.
+  \item \textbf{El proxy de enmascarado no mide eficacia.} La ecuación~\ref{eq:retencion} es binaria
+        y total: supone 100\,\% de ocupación y bloqueo perfecto. Necesaria, no suficiente.
+  \item \textbf{La termodinámica de PMO es un proxy de otra química}, ahora correctamente orientado
+        pero todavía no PMO, y sesgado en una dirección conocida (sección~\ref{sec:termo}).
+  \item \textbf{Los umbrales de severidad off-target no están calibrados}: son decisiones de diseño.
+  \item \textbf{La concordancia entre predictores no es independiente} y, según el control de tejido,
+        en gran medida no informa.
+  \item \textbf{El pipeline es ciego al desplazamiento del sitio de splicing}: puntúa cuatro offsets
+        fijos y descarta el resto del perfil.
+  \item \textbf{El umbral $\tau = 0{,}25$ de la ecuación~\ref{eq:veredicto} es una convención
+        declarada}, no un corte medido.
+\end{itemize}
+
+% =====================================================================
+\section{Discusión}
+
+La contribución científica de este trabajo es modesta y acotada: una explicación mecanística de un
+pseudoexón, confirmada computacionalmente, más un pipeline reproducible que produce una lista corta
+que nadie ha probado.
+
+La contribución metodológica es, creemos, mayor. Un agente de IA produjo un sistema con disciplina de
+ingeniería real --- 224 tests, tres entornos documentados, archivos de procedencia, resultados
+previos a la corrección archivados --- y simultáneamente produjo conclusiones que no sobrevivieron al
+contacto con la revisión adversarial. Y algo central: \textbf{las fallas no fueron aritméticas}. Seis
+revisores no encontraron ningún error de cálculo. Fueron fallas de encuadre: qué métrica definir, qué
+control no correr, qué afirmación repetir sin comprobar --- y, como muestra la
+sección~\ref{sec:atribucion}, qué cita no abrir nunca.
+
+Esa asimetría es el hallazgo que destacaríamos. Es probable que la investigación construida por
+agentes sea fuerte donde el trabajo es mecánico y débil donde requiere decidir qué te refutaría. La
+revisión adversarial no es entonces control de calidad agregado al final; para este modo de trabajo
+es parte del método.
+
+% =====================================================================
+\section{Disponibilidad}
+\label{sec:disponibilidad}
+
+Código, resultados y comandos de regeneración: \url{https://github.com/smnunez404/bio-oligonucleotidos}
+(licencia MIT; datos generados CC BY 4.0). Cada número citado acá tiene un comando de regeneración en
+el README del repositorio, y las figuras de este preprint se generan desde \texttt{data/results/} con
+un script versionado, así que texto y figura no pueden divergir. El informe de revisión adversarial y
+el dossier de afirmaciones se mantienen en el vault de documentación del proyecto y están disponibles
+a pedido.
+
+\section*{Agradecimientos}
+\addcontentsline{toc}{section}{Agradecimientos}
+
+Agradecemos a los autores de SpliceAI (Illumina), Pangolin (Zeng \& Li), Retina-SpliceAI
+(Riepe et al., CMBI/Radboud UMC) y ViennaRNA por publicar su trabajo abiertamente, y a Wang
+et al.\ y Kaltak et al.\ por las mediciones experimentales que hicieron posible el anclaje externo.
+
+% =====================================================================
+\clearpage
+\addcontentsline{toc}{section}{Referencias}
+\begin{thebibliography}{99}
+\small
+
+\bibitem{wang2025}
+Wang Y, Wang P, Yi Z, Ouyang J, Jiang Y, Li S, Jia X, Xiao X, Hejtmancik JF, Sun W, Zhang Q.
+\emph{ABCA4 deep intronic variants contributed to nearly half of unsolved Stargardt cases with a
+milder phenotype.} Invest Ophthalmol Vis Sci. 2025;66(1):65.
+\href{https://doi.org/10.1167/iovs.66.1.65}{doi:10.1167/iovs.66.1.65}
+
+\bibitem{kaltak2023}
+Kaltak M, de Bruijn P, Piccolo D, Lee SE, Dulla K, Hoogenboezem T, Beumer W, Webster AR,
+Collin RWJ, Cheetham ME, Platenburg G, Swildens J.
+\emph{Antisense oligonucleotide therapy corrects splicing in the common Stargardt disease type
+1-causing variant ABCA4 c.5461-10T>C.} Mol Ther Nucleic Acids. 2023;31:674--688.
+\href{https://doi.org/10.1016/j.omtn.2023.02.020}{doi:10.1016/j.omtn.2023.02.020}
+
+\bibitem{jaganathan2019}
+Jaganathan K, Kyriazopoulou Panagiotopoulou S, McRae JF, et al.
+\emph{Predicting splicing from primary sequence with deep learning.}
+Cell. 2019;176(3):535--548.e24.
+\href{https://doi.org/10.1016/j.cell.2018.12.015}{doi:10.1016/j.cell.2018.12.015}
+
+\bibitem{zeng2022}
+Zeng T, Li YI. \emph{Predicting RNA splicing from DNA sequence using Pangolin.}
+Genome Biol. 2022;23(1):103.
+\href{https://doi.org/10.1186/s13059-022-02664-4}{doi:10.1186/s13059-022-02664-4}
+
+\bibitem{riepe2025}
+Riepe TV, de Bruijn SE, Roosing S, Cremers FPM, 't Hoen PAC.
+\emph{Deep learning-based prediction of tissue-specific splice sites in the human neural retina.}
+bioRxiv, publicado el 13 de febrero de 2025.
+\href{https://doi.org/10.1101/2025.02.10.637427}{doi:10.1101/2025.02.10.637427}
+
+\bibitem{sugimoto1995}
+Sugimoto N, Nakano S, Katoh M, Matsumura A, Nakamuta H, Ohmichi T, Yoneyama M, Sasaki M.
+\emph{Thermodynamic parameters to predict stability of RNA/DNA hybrid duplexes.}
+Biochemistry. 1995;34(35):11211--11216.
+\href{https://doi.org/10.1021/bi00035a029}{doi:10.1021/bi00035a029}
+
+\bibitem{santalucia1998}
+SantaLucia J Jr. \emph{A unified view of polymer, dumbbell, and oligonucleotide DNA
+nearest-neighbor thermodynamics.} Proc Natl Acad Sci USA. 1998;95(4):1460--1465.
+\href{https://doi.org/10.1073/pnas.95.4.1460}{doi:10.1073/pnas.95.4.1460}
+
+\bibitem{summerton1997}
+Summerton J, Weller D. \emph{Morpholino antisense oligomers: design, preparation, and properties.}
+Antisense Nucleic Acid Drug Dev. 1997;7(3):187--195.
+\href{https://doi.org/10.1089/oli.1.1997.7.187}{doi:10.1089/oli.1.1997.7.187}
+
+\bibitem{maksudov2023}
+Maksudov F, Kliuchnikov E, Pierson D, et al.
+\emph{Therapeutic phosphorodiamidate morpholino oligonucleotides: physical properties, solution
+structures, and folding thermodynamics.} Mol Ther Nucleic Acids. 2023;31:631--647.
+\href{https://doi.org/10.1016/j.omtn.2023.02.007}{doi:10.1016/j.omtn.2023.02.007}
+
+\bibitem{park2025}
+Park SW, Lee J, Park JW, et al. \emph{Thermodynamic parameter estimation for modified
+oligonucleotides using molecular dynamics simulations.} J Phys Chem B. 2025.
+\href{https://doi.org/10.1021/acs.jpcb.4c08344}{doi:10.1021/acs.jpcb.4c08344}
+
+\bibitem{lorenz2011}
+Lorenz R, Bernhart SH, H\"oner zu Siederdissen C, Tafer H, Flamm C, Stadler PF, Hofacker IL.
+\emph{ViennaRNA Package 2.0.} Algorithms Mol Biol. 2011;6:26.
+\href{https://doi.org/10.1186/1748-7188-6-26}{doi:10.1186/1748-7188-6-26}
+
+\bibitem{camacho2009}
+Camacho C, Coulouris G, Avagyan V, Ma N, Papadopoulos J, Bealer K, Madden TL.
+\emph{BLAST+: architecture and applications.} BMC Bioinformatics. 2009;10:421.
+\href{https://doi.org/10.1186/1471-2105-10-421}{doi:10.1186/1471-2105-10-421}
+
+\bibitem{cock2009}
+Cock PJA, Antao T, Chang JT, et al. \emph{Biopython: freely available Python tools for computational
+molecular biology and bioinformatics.} Bioinformatics. 2009;25(11):1422--1423.
+\href{https://doi.org/10.1093/bioinformatics/btp163}{doi:10.1093/bioinformatics/btp163}
+
+\bibitem{freeman2018}
+Freeman PJ, Hart RK, Gretton LJ, Brookes AJ, Dalgleish R.
+\emph{VariantValidator: accurate validation, mapping, and formatting of sequence variation
+descriptions.} Hum Mutat. 2018;39(1):61--68.
+\href{https://doi.org/10.1002/humu.23348}{doi:10.1002/humu.23348}
+
+\bibitem{scharner2020}
+Scharner J, Ma WK, Zhang Q, Lin KT, Rigo F, Bennett CF, Krainer AR.
+\emph{Hybridization-mediated off-target effects of splice-switching antisense oligonucleotides.}
+Nucleic Acids Res. 2020;48(2):802--816.
+\href{https://doi.org/10.1093/nar/gkz1132}{doi:10.1093/nar/gkz1132}
+
+\bibitem{dhuri2020}
+Dhuri K, Bechtold C, Quijano E, Pham H, Gupta A, Vikram A, Bahal R.
+\emph{Antisense oligonucleotides: an emerging area in drug discovery and development.}
+J Clin Med. 2020;9(6):2004.
+\href{https://doi.org/10.3390/jcm9062004}{doi:10.3390/jcm9062004}
+
+\bibitem{yoshida2018}
+Yoshida T, Naito Y, Sasaki K, Uchida E, Sato Y, Naito M, Kawanishi T, Obika S, Inoue T.
+\emph{Estimated number of off-target candidate sites for antisense oligonucleotides in human mRNA
+sequences.} Genes Cells. 2018;23(6):448--455.
+\href{https://doi.org/10.1111/gtc.12587}{doi:10.1111/gtc.12587}
+
+\bibitem{sullivan2024}
+Sullivan PJ, Quinn JMW, Wu W, Pinese M, Cowley MJ.
+\emph{SpliceVarDB: a comprehensive database of experimentally validated human splicing variants.}
+Am J Hum Genet. 2024;111(10):2164--2175.
+\href{https://doi.org/10.1016/j.ajhg.2024.08.002}{doi:10.1016/j.ajhg.2024.08.002}
+
+\end{thebibliography}
+
+\end{document}

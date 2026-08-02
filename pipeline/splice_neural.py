@@ -23,7 +23,7 @@ CONTEXT = 10_000
 CH_NULL, CH_ACCEPTOR, CH_DONOR = 0, 1, 2
 
 # Umbrales de Delta Score publicados por Illumina. Se reportan los tres en vez de
-# elegir uno: 0,2 es el que usó Peng et al. (IOVS 2025) para las 7 DIVs de su cohorte.
+# elegir uno: 0,2 es el que usó Wang et al. (IOVS 2025) para las 7 DIVs de su cohorte.
 THRESHOLDS = {"alta_sensibilidad": 0.2, "recomendado": 0.5, "alta_precision": 0.8}
 
 _BASE_INDEX = {"A": 0, "C": 1, "G": 2, "T": 3}

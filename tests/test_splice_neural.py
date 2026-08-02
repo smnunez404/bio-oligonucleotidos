@@ -70,7 +70,7 @@ def test_umbrales_publicados_sin_alterar():
 
 def test_pseudoexon_pe1b_reproduce_los_91_pb_medidos():
     """Control cruzado: el aceptor -89 con el donador +1 debe dar los 91 pb del PE1b
-    confirmado por minigén en Peng et al. 2025 (Fig. 2B)."""
+    confirmado por minigén en Wang et al. 2025 (Fig. 2B)."""
     pe1b = PseudoexonHypothesis(acceptor_offset=-89, donor_offset=1)
     assert pe1b.length == 91
 

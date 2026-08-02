@@ -13,7 +13,7 @@ ALCANCE Y LIMITACIONES — leer antes de usar los resultados:
 - Que un motivo se acerque al consenso NO demuestra que el espliceosoma lo use.
   Sirve para generar una hipótesis localizada y priorizar dónde apuntar el ASO,
   no para concluir nada sobre el mecanismo real.
-- La literatura (Peng et al. 2025) reporta TRES pseudoexones (PE1b/c/d) para
+- La literatura (Wang et al. 2025) reporta TRES pseudoexones (PE1b/c/d) para
   esta variante; un único sitio donador críptico no explica los tres por sí solo.
 """
 

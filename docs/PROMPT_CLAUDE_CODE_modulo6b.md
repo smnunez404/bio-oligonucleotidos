@@ -14,7 +14,7 @@ el mensaje del gen:
 - **donador críptico** en +1 respecto de la variante
 - **aceptor críptico** en −89 respecto de la variante
 - entre los dos definen un pseudoexón de **91 pb**, que coincide exactamente con
-  uno medido en laboratorio (PE1b) por Peng et al. 2025 — validación cruzada.
+  uno medido en laboratorio (PE1b) por Wang et al. 2025 — validación cruzada.
 
 El Módulo 6b simula qué pasa si un ASO **tapa** una región: se reemplaza esa
 ventana por `N`, que SpliceAI codifica como vector nulo ("acá no hay información

@@ -133,7 +133,7 @@ razonamiento mecanístico, no el código.
    modelo?
 5. **Retina**: el predictor de retina se entrenó sobre retina completa, pero ABCA4 se expresa en
    fotorreceptores. ¿Cuánto compromete eso las conclusiones?
-6. La coincidencia de 91 pb con el minigén de Peng et al. 2025 — ¿es tan fuerte como el proyecto
+6. La coincidencia de 91 pb con el minigén de Wang et al. 2025 — ¿es tan fuerte como el proyecto
    afirma, o hay explicaciones alternativas (p. ej. que ambos métodos hereden el mismo sesgo de
    anotación)?
 

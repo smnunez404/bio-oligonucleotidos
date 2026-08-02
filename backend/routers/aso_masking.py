@@ -213,7 +213,7 @@ def get_aso_masking(classification: str | None = None, predictor: str = DEFAULT_
             "donor_cryptic_offset": 1,
             "acceptor_cryptic_offset": -89,
             "pseudoexon_size": 91,
-            "pseudoexon_note": "coincide con PE1b (91 pb) medido por minigén en Peng et al. 2025",
+            "pseudoexon_note": "coincide con PE1b (91 pb) medido por minigén en Wang et al. 2025",
         },
         "verdict": {
             "counts": verdict_counts,

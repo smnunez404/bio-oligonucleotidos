@@ -100,7 +100,7 @@ punta a punta.
 ### El resultado más fuerte
 
 El pseudoexón predicho mide **91 pb**, coincidiendo *exactamente* con el PE1b medido por ensayo de
-minigén en Peng et al. (IOVS 2025) — dos métodos completamente independientes convergiendo en el
+minigén en Wang et al. (IOVS 2025) — dos métodos completamente independientes convergiendo en el
 mismo número. Es la afirmación que salió intacta de la revisión adversarial.
 
 ### Cuatro predictores — y por qué su concordancia prueba menos de lo que parece
@@ -297,12 +297,52 @@ Se declaran junto a cada resultado, y no pueden omitirse al comunicarlo:
 
 ---
 
+## Manuscrito
+
+Un preprint metodológico que cubre el pipeline, las ecuaciones detrás de cada módulo y la revisión
+adversarial como resultado primario:
+
+| | |
+|---|---|
+| Español | [`docs/preprint_es/preprint_es.pdf`](docs/preprint_es/preprint_es.pdf) |
+| English | [`docs/preprint_en/preprint_en.pdf`](docs/preprint_en/preprint_en.pdf) |
+
+Los dos se generan desde los mismos datos. Las cuatro figuras salen de `data/results/` mediante
+`pipeline/make_figures.py`, así que texto y figura no pueden divergir en silencio:
+
+```bash
+scripts/run-in-env.sh python pipeline/make_figures.py
+```
+
+En [`docs/articulo_es/`](docs/articulo_es/) queda un informe de avance anterior; es previo a la
+corrección de Tm y se conserva como registro, no como el estado actual de los resultados.
+
+---
+
 ## Fuentes sobre las que se construye este trabajo
 
-- Peng et al. *IOVS* 2025;66(1):65 — medición por minigén de PE1b/PE1c/PE1d.
-- Kaltak et al. *Mol Ther Nucleic Acids* 2023 — el oligo-walk de 32 AONs que produjo QR-1011.
-- Jaganathan et al. *Cell* 2019 — SpliceAI. · Zeng & Li 2022 — Pangolin.
-- Riepe et al. — Retina-SpliceAI (`github.com/cmbi/Retina-SpliceAI`, GPL-3.0).
+Cada cita se resolvió contra Crossref o PubMed Central. La lista completa de referencias, con DOIs,
+está en el preprint.
+
+- **Wang Y, Wang P, Yi Z, et al.** *IOVS* 2025;66(1):65 — medición por minigén de PE1b/PE1c/PE1d.
+  [doi:10.1167/iovs.66.1.65](https://doi.org/10.1167/iovs.66.1.65)
+- **Kaltak M, de Bruijn P, Piccolo D, et al.** *Mol Ther Nucleic Acids* 2023;31:674–688 — el
+  oligo-walk de 32 AONs que produjo QR-1011, usado acá como conjunto de calibración.
+  [doi:10.1016/j.omtn.2023.02.020](https://doi.org/10.1016/j.omtn.2023.02.020)
+- **Jaganathan K, et al.** *Cell* 2019;176(3):535–548 — SpliceAI.
+  [doi:10.1016/j.cell.2018.12.015](https://doi.org/10.1016/j.cell.2018.12.015)
+- **Zeng T, Li YI.** *Genome Biol* 2022;23:103 — Pangolin.
+  [doi:10.1186/s13059-022-02664-4](https://doi.org/10.1186/s13059-022-02664-4)
+- **Riepe TV, de Bruijn SE, Roosing S, et al.** bioRxiv 2025 — Retina-SpliceAI
+  (`github.com/cmbi/Retina-SpliceAI`, GPL-3.0).
+  [doi:10.1101/2025.02.10.637427](https://doi.org/10.1101/2025.02.10.637427)
+- **Sugimoto N, et al.** *Biochemistry* 1995;34:11211–11216 — la tabla nearest-neighbor de híbridos
+  ARN/ADN que se usa para la Tm. [doi:10.1021/bi00035a029](https://doi.org/10.1021/bi00035a029)
+- **Summerton J, Weller D.** *Antisense Nucleic Acid Drug Dev* 1997;7:187–195 — química PMO.
+  [doi:10.1089/oli.1.1997.7.187](https://doi.org/10.1089/oli.1.1997.7.187)
+- **Scharner J, et al.** *Nucleic Acids Res* 2020;48(2):802–816 — qué captura y qué no la predicción
+  de off-target basada en BLAST.
+  [doi:10.1093/nar/gkz1132](https://doi.org/10.1093/nar/gkz1132)
 
 ---
 
