@@ -425,6 +425,11 @@ def test_analyze_off_target_no_severity_for_candidate_with_no_homology(mini_blas
 
 @pytest.mark.blast
 def test_run_blast_raises_clear_error_for_missing_db():
+    import shutil
+
+    if shutil.which("blastn") is None:
+        pytest.skip("blastn no está instalado en este entorno")
+
     from pipeline.off_target import run_blast
 
     with pytest.raises(RuntimeError, match="No se encontró el índice BLAST"):
