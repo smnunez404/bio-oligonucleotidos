@@ -27,6 +27,42 @@ claim is made** — never in a footnote.
 
 ---
 
+## How this project was built, and who decided what
+
+This section exists because the honest answer changes how the rest should be read.
+
+**Timeline.** The whole project — seven modules, the web platform, the documentation vault, the
+adversarial review and the corrections that followed — was built between **28 July and 2 August
+2026**. Six days.
+
+**AI assistance was extensive and is disclosed deliberately.** An AI agent (Claude, Anthropic)
+wrote the implementation, ran the pipelines and drafted the documentation. That is not a footnote:
+it is the reason this repository is organised the way it is, and it is also why the adversarial
+review exists.
+
+**What the authors decided, and the agent did not:**
+
+- **The chemistry.** PMO was a scope decision by the project owner, made against the retinal
+  literature precedent (2'-MOE/PS), and documented as such with its costs.
+- **Commissioning an adversarial review.** Six independent reviewers were tasked with attacking
+  the work, precisely because the agent that built it could not be trusted to audit itself. That
+  review found 7 critical issues and returned *"reject with invitation to major resubmission"*.
+- **Pushing back when the agent was wrong.** Three of the highest-impact errors in this project —
+  a binary declared missing while installed, a crash that reached production, and a type-check
+  command that verified nothing — surfaced because the authors asked, not because the agent
+  noticed. So did the discovery that PMO force-field parameters *do* exist, after the agent had
+  asserted they did not.
+- **The methodological calls**, taken on the agent's recommendation but with the reasoning made
+  explicit first: converting the melting-temperature filter into an annotation (ADR 0014),
+  choosing a Pareto front over weighted scoring (ADR 0011), and not publishing the vault.
+
+**What this means for a reader.** The engineering here is agent-produced and should be judged on
+its tests and its reproducibility, both of which are open. The *judgement* — what to build, what to
+distrust, what to check again — is the authors'. The adversarial review report is the evidence for
+which is which, and it is unflattering by design.
+
+---
+
 ## The biological problem, in one paragraph
 
 Stargardt disease type 1 is the most common inherited macular dystrophy, caused by biallelic

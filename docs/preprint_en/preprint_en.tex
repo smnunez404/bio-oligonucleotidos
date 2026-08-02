@@ -1,0 +1,290 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{caption}
+\usepackage{amsmath}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+
+\hypersetup{colorlinks=true, linkcolor=blue!50!black, citecolor=blue!50!black, urlcolor=blue!50!black}
+\titleformat{\section}{\large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{1em}{}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small In silico ASO design for ABCA4 c.161-395G>A}
+\fancyhead[R]{\small Preprint}
+\fancyfoot[C]{\thepage}
+
+\title{\textbf{An agent-built pipeline for in silico antisense oligonucleotide design,
+and what six adversarial reviewers found in it}\\[0.3em]
+\large A methodological report on ABCA4 c.161-395G>A}
+
+\author{
+Sergio Mauricio Nuñez\thanks{Project conception, scope decisions, adversarial review
+commissioning, supervision. \textit{YAIS Lab.} Contact:
+\href{mailto:mauricio.nunez@yaislab.org}{mauricio.nunez@yaislab.org}}
+\quad
+Amyra Sanchez\thanks{Domain review, literature curation, manuscript review. \textit{YAIS Lab.}}
+\and
+\textit{Implementation, pipeline execution and drafting were carried out by an AI agent
+(Claude, Anthropic) under author supervision. Section~\ref{sec:provenance} states explicitly
+which decisions were the authors' and which were not.}
+}
+\date{2 August 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\noindent
+The deep-intronic variant \textbf{ABCA4 c.161-395G>A} activates an aberrant pseudoexon (PE1b,
+91~bp) and is the most prevalent deep-intronic allele in a reported Chinese Stargardt disease
+cohort. No antisense oligonucleotide (ASO) has been published or patented against it. We report a
+reproducible seven-module computational pipeline for in silico design of splice-switching ASO
+candidates of \textbf{PMO} chemistry, built end to end by an AI agent over six days, and then
+submitted to a panel of six independent adversarial reviewers.
+
+The pipeline reproduces two results with external anchors. First, the variant installs the
+$-2$~consensus adenine of the donor motif over an intact GT dinucleotide
+(\texttt{GGG|GTAGGT}~$\rightarrow$~\texttt{GAG|GTAGGT}), a model-free and threshold-free
+observation. Second, two independently trained neural predictors place their maximum at exactly
+$+1$ and $-89$ relative to the variant, yielding a predicted pseudoexon of \textbf{91~bp} that
+matches the minigene measurement of Peng et al.\ (2025) exactly.
+
+We report the adversarial review as a primary result rather than as a limitations paragraph. The
+panel returned \emph{reject with invitation to major resubmission} and identified seven critical
+issues. Correcting them changed the conclusions: a strand-orientation bug in the melting-temperature
+calculation had propagated four modules upstream and generated a finding, a design record and a
+published conclusion; a negative control with deliberately wrong tissue reproduced the
+``three-predictor agreement'' exactly, showing that agreement to be uninformative; and a claim
+repeated across six documents for four days had never been verified against the literature.
+
+\textbf{No candidate has been synthesised or assayed.} We argue that for agent-built research the
+adversarial review is not optional quality control but part of the method, and we quantify why.
+\end{abstract}
+
+\tableofcontents
+
+\section{Motivation}
+
+Stargardt disease type~1 is the most common inherited macular dystrophy, caused by biallelic
+variants in \textbf{ABCA4}. A relevant fraction of pathogenic alleles are not coding variants but
+\textbf{deep-intronic variants} that activate cryptic splice sites, leading the spliceosome to
+treat an intronic stretch as an exon --- a \emph{pseudoexon} --- and to introduce a premature
+termination codon.
+
+Peng et al.\ (2025, \emph{IOVS} 66(1):65) showed by minigene assay that \textbf{c.161-395G>A}
+activates three pseudoexons (PE1b 91~bp, PE1c 255~bp, PE1d 265~bp), with 76.4\,\% of the resulting
+mRNA incorrectly spliced. They assessed splicing effects with the SpliceAI web lookup and reported
+only that all variants exceeded a delta score of 0.2; they did not report cryptic site positions,
+pseudoexon coordinates, or a mechanistic account of the base change.
+
+Splice-switching ASOs bind the pre-mRNA by base complementarity and \textbf{sterically block}
+access to a splice site without degrading the transcript. No published or patented ASO targets this
+variant --- which motivates the work, but also means \textbf{there is no positive control} with
+which to validate a design pipeline end to end.
+
+\section{Provenance and division of judgement}
+\label{sec:provenance}
+
+We state this before the methods because it conditions how the rest should be read.
+
+The implementation, pipeline execution and drafting were produced by an AI agent. The following
+were author decisions, not the agent's:
+
+\begin{itemize}[nosep]
+  \item \textbf{The chemistry.} PMO was chosen as a scope decision, against the retinal literature
+        precedent (2$'$-MOE/PS), and documented with its costs.
+  \item \textbf{Commissioning the adversarial review}, on the explicit reasoning that an agent
+        cannot audit work it produced.
+  \item \textbf{Challenging the agent's assertions.} Three of the highest-impact errors surfaced
+        because the authors asked, not because the agent detected them --- as did the fact that PMO
+        force-field parameters do exist, after the agent had asserted they did not.
+\end{itemize}
+
+We consider this disclosure a methodological requirement rather than an acknowledgement.
+
+\section{Pipeline}
+
+Seven modules, each with its own reproducible runner and declared limitations.
+
+\begin{center}
+\begin{tabular}{@{}clll@{}}
+\toprule
+\textbf{\#} & \textbf{Module} & \textbf{Question} & \textbf{Result} \\
+\midrule
+1 & Sequence & Where is the variant? & Coordinate confirmed by two routes \\
+2 & Oligo-walk & Which windows? & 381 candidates \\
+3 & Heuristic filter & Viable oligos? & 381 $\rightarrow$ 276 \\
+4 & Thermodynamics & Bind well, reachable? & 276 $\rightarrow$ 78 \\
+5 & Off-target & Resemble other genes? & 78 annotated by severity \\
+6 & Neural splicing & Is the false site real? & Donor $+1$, acceptor $-89$ \\
+6b & ASO masking & Does each patch switch it off? & 12 abolish the pseudoexon \\
+7 & Ranking & Which to synthesise first? & Pareto front: 3 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Representing an ASO to a splice predictor}
+
+Splice predictors take a single sequence strand and have no representation of a bound ligand. A PMO
+does not cleave or modify the RNA --- it covers it. We therefore replace the ASO window with
+\texttt{N}, which the one-hot encoding of both predictor families maps to the null vector: ``no
+readable sequence information here''. This is a direct proxy for steric block.
+
+Two alternatives were rejected: mutating the window introduces spurious motifs, and excising it
+shifts all downstream coordinates. Notably, \texttt{predict\_scores} already pads with
+\texttt{"N"}$\times$5000 on each side, so blocks of \texttt{N} are the operational convention of
+these models rather than an invented input.
+
+\subsection{Why a Pareto front and not a weighted score}
+
+The three ranking dimensions --- block strength, off-target safety, thermodynamic quality --- have
+incomparable units. Averaging them requires positing an exchange rate (how many base pairs of
+off-target homology are worth 0.01 of block strength) that \textbf{no data in this project
+supports}, precisely because there is no positive control against which to calibrate it. A Pareto
+front requires no such rate. It returns a set rather than a winner, which is the honest output.
+
+\section{Results with external anchors}
+
+These two do not depend on any metric we defined.
+
+\subsection{The variant installs the donor consensus adenine}
+
+Counting matches against the donor consensus \texttt{MAG|GTRAGT}, the wild-type sequence 1~nt
+downstream of the variant reads \texttt{GGG|GTAGGT} and the mutant reads \texttt{GAG|GTAGGT}. The
+variant itself supplies the adenine at position $-2$ --- one of the most conserved positions of the
+donor consensus --- over an intact GT dinucleotide, with purines at $+3$ and $+5$. This requires no
+model, no threshold and no predictor.
+
+\subsection{The predicted pseudoexon size matches an independent experiment}
+
+SpliceAI local inference over a 10~kb window predicts a cryptic donor gained at $+1$
+(0.194~$\rightarrow$~0.560) and a cryptic acceptor at $-89$ (0.061~$\rightarrow$~0.271). The implied
+pseudoexon is \textbf{91~bp}, identical to the PE1b measured by minigene in Peng et al.\ (2025) ---
+computational prediction and in vitro measurement converging by fully independent routes.
+
+Pangolin, a different architecture trained by a different group, places its maximum at
+\emph{exactly} the same two positions, with neighbouring positions at $\sim$1e$-$5. A deliberate
+attempt to break this result during adversarial review failed.
+
+\textbf{What does not follow.} SpliceAI does not explain PE1c or PE1d: their implied acceptors score
+0.016 and 0.042, far below any usable threshold. The model accounts for one of three reported
+pseudoexons, and we state this rather than omit it.
+
+\section{The adversarial review as a result}
+
+Six independent reviewers --- splicing biology, statistics, reproducibility, ASO therapeutics, code
+integrity, and a hostile red team --- were given a dossier of every claim with its evidence level
+and regeneration command, plus explicit rules of engagement requiring that each objection cite a
+file, line or number.
+
+The verdict was \emph{reject with invitation to major resubmission}. Seven critical issues were
+raised. Four were independently verified before acceptance. Their consequences:
+
+\subsection{A Module 4 bug that travelled four modules upstream}
+
+\texttt{Bio.SeqUtils.MeltingTemp.Tm\_NN} with the \texttt{R\_DNA\_NN1} table documents that the
+argument must be the \textbf{RNA} strand; the code passed the ASO. The table is asymmetric, so the
+order changes the number.
+
+Correcting it moved the Module~4 funnel from \textbf{44 to 16} candidates, with only 6 in common.
+More consequentially, the seven candidates that abolished the acceptor \emph{without covering it}
+--- the observation that had motivated the project's verdict criterion, its own design record, and a
+published conclusion about predictor agreement --- \textbf{did not survive}. A defect in the
+cheapest module had generated a finding four modules downstream.
+
+\subsection{A wrong-tissue control that dissolved an argument}
+
+The project had reported that three independently trained predictors, one of them retina-specific,
+selected the same exact candidate set, and presented this as cross-validation. The panel proposed
+the missing control: run a model trained on \emph{deliberately} the wrong tissue.
+
+It reproduced the same set exactly. The agreement reflects shared architecture and shared training
+annotations, not tissue-robust biology. The control cost six minutes of CPU and had been available
+since the weights were installed; nobody in the project had run it, because nobody was looking for a
+way to refute their own argument.
+
+\subsection{A claim repeated for four days without verification}
+
+The assertion that no nearest-neighbour thermodynamic parameters exist for PMO propagated through
+six documents from a single unverified inference. Checking it found: the claim is essentially
+correct for PMO, but the NN model \emph{is} documented as applicable to uncharged oligomers;
+parameters \emph{do} exist for 2$'$-MOE/PS, the chemistry of the actual retinal literature; and PMO
+force-field parameters \emph{do} exist (Sarepta, 2023). Further, the experimental evidence shows
+phosphorodiamidate linkages \emph{stabilise} the duplex, so the proxy \textbf{underestimates} the
+true melting temperature --- a bias in the same direction as the inapplicable salt correction, so
+the two accumulate rather than cancel.
+
+\subsection{A correction that recovered what the filter had hidden}
+
+Because the melting-temperature threshold could not be interpreted for this chemistry, it was
+converted from a filter into an annotation --- following a precedent the project had already set for
+off-target severity. The funnel went from 16 to \textbf{78} candidates.
+
+The acceptor-only candidates \textbf{reappeared}: nine of them, with proxy melting temperatures of
+36.5--40.1\,$^\circ$C, all below the discarded threshold. The mechanism was real; the buggy
+calculation had admitted them for the wrong reason and the corrected gate had hidden them entirely.
+The final Pareto front returns to the same three candidates as the original analysis, now by a
+defensible route.
+
+\section{What this pipeline does not do}
+
+Stated with every result and not omissible when communicating it.
+
+\begin{itemize}[nosep]
+  \item \textbf{No experimental validation.} No ASO synthesised or assayed.
+  \item \textbf{The masking proxy does not measure efficacy.} It is binary and total: 100\,\%
+        occupancy, perfect block. Necessary, not sufficient.
+  \item \textbf{PMO thermodynamics are a proxy of another chemistry}, now correctly oriented but
+        still not PMO.
+  \item \textbf{Off-target severity thresholds are uncalibrated} design choices.
+  \item \textbf{Predictor agreement is not independent} and, per the tissue control, largely
+        uninformative.
+  \item \textbf{The pipeline is blind to splice-site displacement}: it scores four fixed offsets
+        and discards the rest of the profile.
+\end{itemize}
+
+\section{Discussion}
+
+The scientific contribution of this work is modest and bounded: a mechanistic account of one
+pseudoexon, computationally confirmed, plus a reproducible pipeline that produces a shortlist no
+one has tested.
+
+The methodological contribution is, we think, larger. An AI agent produced a system with real
+engineering discipline --- 224 tests, three documented environments, provenance files, archived
+pre-correction results --- and simultaneously produced conclusions that did not survive contact with
+adversarial review. Crucially, \textbf{the failures were not arithmetic}. Six reviewers found no
+calculation error. They were failures of framing: which metric to define, which control not to run,
+which claim to repeat without checking.
+
+That asymmetry is the finding we would emphasise. Agent-built research is likely to be strong where
+the work is mechanical and weak where it requires deciding what would refute you. Adversarial review
+is therefore not quality control appended at the end; for this mode of work it is part of the
+method.
+
+\section{Availability}
+\label{sec:availability}
+
+Code, results and regeneration commands: \url{https://github.com/smnunez404/bio-oligonucleotidos}
+(MIT licence; generated data CC BY 4.0). Every number cited here has a regeneration command in the
+repository README. The adversarial review report and the claims dossier are maintained in the
+project's documentation vault and are available on request.
+
+\section*{Acknowledgements}
+
+We thank the authors of SpliceAI (Illumina), Pangolin (Zeng \& Li), Retina-SpliceAI
+(Riepe et al., CMBI/Radboud UMC) and ViennaRNA for making their work openly available, and Peng
+et al.\ and Kaltak et al.\ for the experimental measurements that made external anchoring possible.
+
+\end{document}

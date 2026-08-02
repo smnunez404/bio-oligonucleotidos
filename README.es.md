@@ -28,6 +28,44 @@ lugar donde se hace** — nunca en una nota al pie.
 
 ---
 
+## Cómo se construyó este proyecto, y quién decidió qué
+
+Esta sección existe porque la respuesta honesta cambia cómo debe leerse todo lo demás.
+
+**Cronología.** El proyecto entero —siete módulos, la plataforma web, el vault de documentación, la
+revisión adversarial y las correcciones que siguieron— se construyó entre el **28 de julio y el 2
+de agosto de 2026**. Seis días.
+
+**La asistencia de IA fue extensa y se declara a propósito.** Un agente de IA (Claude, Anthropic)
+escribió la implementación, corrió los pipelines y redactó la documentación. Eso no es una nota al
+pie: es la razón por la que este repositorio está organizado como está, y también por la que existe
+la revisión adversarial.
+
+**Lo que decidieron los autores, y el agente no:**
+
+- **La química.** PMO fue una decisión de alcance del dueño del proyecto, tomada en contra del
+  precedente de la literatura retinal (2'-MOE/PS), y documentada como tal con sus costos.
+- **Encargar una revisión adversarial.** Seis revisores independientes recibieron el encargo de
+  atacar el trabajo, precisamente porque el agente que lo construyó no era confiable para
+  auditarse a sí mismo. Esa revisión encontró 7 problemas críticos y devolvió *"rechazo con
+  invitación a resubmisión mayor"*.
+- **Insistir cuando el agente se equivocaba.** Tres de los errores de mayor impacto de este
+  proyecto —un binario declarado ausente estando instalado, un crash que llegó a producción, y un
+  comando de verificación de tipos que no verificaba nada— aparecieron porque los autores
+  preguntaron, no porque el agente los detectara. También apareció así que los parámetros de campo
+  de fuerza para PMO **sí existen**, después de que el agente afirmara lo contrario.
+- **Las decisiones metodológicas**, tomadas sobre la recomendación del agente pero con el
+  razonamiento explícito primero: convertir el filtro de temperatura de fusión en anotación
+  (ADR 0014), elegir un frente de Pareto sobre un puntaje ponderado (ADR 0011), y no publicar el
+  vault.
+
+**Qué significa esto para quien lee.** La ingeniería es producto del agente y debe juzgarse por sus
+tests y su reproducibilidad, ambos abiertos. El *criterio* —qué construir, de qué desconfiar, qué
+volver a comprobar— es de los autores. El informe de revisión adversarial es la evidencia de cuál
+es cuál, y es poco halagador por diseño.
+
+---
+
 ## El problema biológico, en un párrafo
 
 La enfermedad de Stargardt tipo 1 es la distrofia macular hereditaria más frecuente, causada por
