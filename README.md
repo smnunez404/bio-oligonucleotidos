@@ -1,6 +1,6 @@
 # In silico design of antisense oligonucleotides for ABCA4 c.161-395G>A
 
-[![tests](https://img.shields.io/badge/tests-223%20passing-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-224%20passing-brightgreen)](#tests)
 [![status](https://img.shields.io/badge/status-research%20prototype-orange)](#-what-this-is-not)
 [![experimental validation](https://img.shields.io/badge/experimental%20validation-none-red)](#-what-this-is-not)
 
@@ -50,11 +50,11 @@ also means **there is no positive control** with which to validate the pipeline 
 | 1 | `sequence.py` | Where exactly is the variant? | Coordinate confirmed via two independent routes |
 | 2 | `oligo_walk.py` | Which windows could be targeted? | **381** candidates |
 | 3 | `heuristic_filters.py` | Which are viable oligos (GC%, G-runs)? | 381 → **276** |
-| 4 | `thermodynamics.py` | Which bind well and reach the target? | 276 → **44** ⚠️ *see known issues* |
-| 5 | `off_target.py` | Which resemble other human genes? | 44 annotated by severity |
+| 4 | `thermodynamics.py` | Which bind well and reach the target? | 276 → **16** |
+| 5 | `off_target.py` | Which resemble other human genes? | 16 annotated by severity |
 | 6 | `splice_neural.py` | Does the variant really create a false site? | Cryptic donor +1, acceptor −89 → 91 bp |
-| 6b | `aso_masking.py` | Does each patch switch the false site off? | **10** abolish the pseudoexon |
-| 7 | `ranking.py` | Which are worth synthesising first? | Pareto front: **3** candidates |
+| 6b | `aso_masking.py` | Does each patch switch the false site off? | **3** abolish the pseudoexon |
+| 7 | `ranking.py` | Which are worth synthesising first? | Pareto front: **2** candidates |
 
 ### Strongest result
 
@@ -66,12 +66,12 @@ the claim that survived adversarial review untouched.
 
 | Predictor | Trained on | Verdict (abolish / no effect / harms) |
 |---|---|---|
-| SpliceAI (Illumina) | tissue-agnostic | 10 / 34 / 0 |
-| Pangolin (U. Penn) | 4 tissues, no retina | 10 / 34 / 0 |
-| Retina-SpliceAI (Radboud UMC) | 503 human retina samples | 10 / 34 / 0 |
-| **GTEx control** | **deliberately the wrong tissue** | **10 / 34 / 0** |
+| SpliceAI (Illumina) | tissue-agnostic | 3 / 13 / 0 |
+| Pangolin (U. Penn) | 4 tissues, no retina | 3 / 13 / 0 |
+| Retina-SpliceAI (Radboud UMC) | 503 human retina samples | 3 / 13 / 0 |
+| **GTEx control** | **deliberately the wrong tissue** | **3 / 13 / 0** |
 
-All four select the **same exact set** of 10 candidates.
+All four select the **same exact set** of 3 candidates.
 
 The fourth row is a **negative control run after adversarial review**, and it undercuts the
 project's own earlier claim. The three-predictor agreement was presented as cross-validation; a
@@ -175,7 +175,7 @@ python3 scripts/lint_vault.py
 scripts/run-in-env.sh python -m pytest tests/ -q
 ```
 
-**223 passing, 0 failing, 0 skipped.** Values asserted in tests are the **measured** results of
+**224 passing, 0 failing, 0 skipped.** Values asserted in tests are the **measured** results of
 documented runs, not invented — several tests exist specifically to catch a refactor silently
 changing an already-published result. A mutation-testing audit during review killed 23 of 29
 injected bugs (79%).
@@ -189,7 +189,7 @@ reproducibility, ASO therapeutics, code integrity, and a hostile red team). **Th
 
 | ID | Issue | Impact |
 |---|---|---|
-| **CRIT-4** | **Strand-orientation bug in Tm.** Biopython requires the RNA strand for `R_DNA_NN1`; the code passes the ASO | Module 4 funnel goes from **44 to 16** candidates, only 6 in common. One of the three final candidates would not have survived. **Independently verified.** |
+| ~~CRIT-4~~ | ✅ **FIXED (2026-08-01).** Tm now computed on the RNA strand, as Biopython documents | Funnel went 44 → **16**. `cand_5882` (previously in the Pareto front) eliminated. Pre-fix results archived in `data/results/pre-crit4-fix/`. **This dissolved the empirical finding behind CRIT-2** — see below |
 | **CRIT-1** | The calibration does not apply the pipeline's selection criterion, and runs in the opposite direction | The 0.974 AUC measures the masking proxy, not the selection criterion |
 | **CRIT-2** | The "two borders" rule is operationally a one-border rule | No candidate abolishes only the donor, in any predictor. **Verified.** |
 | **CRIT-3** | p = 5.96×10⁻⁵ assumes independence | The 5 known-effective AONs overlap a single site; corrected p is **0.03–0.11** |
@@ -197,7 +197,12 @@ reproducibility, ASO therapeutics, code integrity, and a hostile red team). **Th
 | **CRIT-5** | The 4 masking controls are scale-invariant | A predictor with no biology at all passes all four |
 | **CRIT-7** | The pipeline cannot detect splice-site displacement | It scores 4 fixed offsets and discards the rest of the profile |
 
-**Nothing downstream of Module 4 should be treated as final until CRIT-4 is resolved.**
+> **Consequence of fixing CRIT-4, worth stating plainly:** the 7 candidates that abolished the
+> acceptor without covering it — the finding that motivated the project's verdict criterion — were
+> produced by a thermodynamic filter with the strands inverted. **None survives the corrected
+> calculation.** The mechanistic argument stands; its own empirical evidence does not. A bug in
+> Module 4 travelled four modules upward and generated a finding, a design record and a published
+> conclusion.
 
 ### What survived the review
 
@@ -217,7 +222,7 @@ reproducibility, ASO therapeutics, code integrity, and a hostile red team). **Th
 pipeline/        the 7 modules + reproducible runners
 backend/         FastAPI, one router per module
 frontend/        React + TypeScript, one tab per module
-tests/           223 tests
+tests/           224 tests
 scripts/         environment wrapper, documentation linter
 docs/            methodological progress report (LaTeX + PDF)
 data/results/    generated results (versioned)

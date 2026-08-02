@@ -57,101 +57,18 @@
  ],
  "block_retention": 0.25,
  "canonical_safe_retention": 0.8,
- "n_candidates": 44,
+ "n_candidates": 16,
  "distribution_donor_only": {
-  "bloquea": 9,
-  "sin_efecto": 28,
-  "contraproducente": 7
+  "bloquea": 3,
+  "sin_efecto": 13,
+  "contraproducente": 0
  },
  "distribution": {
-  "anula_pseudoexon": 10,
-  "sin_efecto": 34,
+  "anula_pseudoexon": 3,
+  "sin_efecto": 13,
   "daña_canonico": 0
  },
  "useful_candidates": [
-  {
-   "name": "cand_5877",
-   "start_rel": -123,
-   "end_rel": -103,
-   "borders": [
-    "donador",
-    "aceptor"
-   ],
-   "retention_donor": 0.1778,
-   "retention_acceptor": 0.0337,
-   "retention_canonical": 1.0317
-  },
-  {
-   "name": "cand_5878",
-   "start_rel": -122,
-   "end_rel": -102,
-   "borders": [
-    "donador",
-    "aceptor"
-   ],
-   "retention_donor": 0.1702,
-   "retention_acceptor": 0.0126,
-   "retention_canonical": 1.0349
-  },
-  {
-   "name": "cand_5879",
-   "start_rel": -121,
-   "end_rel": -101,
-   "borders": [
-    "donador",
-    "aceptor"
-   ],
-   "retention_donor": 0.1776,
-   "retention_acceptor": 0.0033,
-   "retention_canonical": 1.0307
-  },
-  {
-   "name": "cand_5880",
-   "start_rel": -120,
-   "end_rel": -100,
-   "borders": [
-    "donador",
-    "aceptor"
-   ],
-   "retention_donor": 0.1562,
-   "retention_acceptor": 0.0045,
-   "retention_canonical": 1.0368
-  },
-  {
-   "name": "cand_5881",
-   "start_rel": -119,
-   "end_rel": -99,
-   "borders": [
-    "donador",
-    "aceptor"
-   ],
-   "retention_donor": 0.1548,
-   "retention_acceptor": 0.0114,
-   "retention_canonical": 1.0396
-  },
-  {
-   "name": "cand_5882",
-   "start_rel": -118,
-   "end_rel": -98,
-   "borders": [
-    "donador",
-    "aceptor"
-   ],
-   "retention_donor": 0.2181,
-   "retention_acceptor": 0.0026,
-   "retention_canonical": 1.0297
-  },
-  {
-   "name": "cand_5883",
-   "start_rel": -117,
-   "end_rel": -97,
-   "borders": [
-    "aceptor"
-   ],
-   "retention_donor": 0.3532,
-   "retention_acceptor": 0.0065,
-   "retention_canonical": 1.0244
-  },
   {
    "name": "cand_5992",
    "start_rel": -8,

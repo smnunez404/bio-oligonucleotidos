@@ -192,63 +192,57 @@ def _real_candidates():
     return out
 
 
-def test_datos_reales_diez_elegibles():
-    """Los 10 que anulan el pseudoexón según los dos predictores (ADR 0012)."""
-    res = rank(_real_candidates())
-    assert res["n_eligible"] == 10
-    assert res["n_rejected"] == 34
+def test_datos_reales_tres_elegibles():
+    """Los 3 que anulan el pseudoexón según los dos predictores.
 
-
-def test_datos_reales_el_frente_son_tres():
-    """Valor medido, no elegido: el frente reduce de 10 a 3."""
-    res = rank(_real_candidates())
-    assert res["front"] == ["cand_5882", "cand_5992", "cand_5998"]
-
-
-def test_cada_uno_del_frente_gana_en_una_dimension_distinta():
-    """Es lo que hace interpretable al frente: no son 3 empatados, son 3
-    trade-offs distintos."""
-    res = rank(_real_candidates())
-    front = {c.name: c.objectives for c in res["candidates"] if c.in_front}
-
-    assert max(front, key=lambda n: front[n].block_strength) == "cand_5992"
-    assert max(front, key=lambda n: front[n].thermo_quality) == "cand_5882"
-    # 5998 no gana ninguna sola: sobrevive por la combinación (bloqueo casi
-    # perfecto sin ser el peor en termo). Que exista un caso así es la razón de
-    # usar Pareto y no ordenar por una sola columna.
-    assert "cand_5998" in front
-
-
-def test_los_que_anulan_ambos_bordes_son_los_peores_en_termodinamica():
-    """LA TENSIÓN DEL MÓDULO 7, medida sobre los datos reales.
-
-    Los 3 candidatos que anulan los DOS bordes del pseudoexón (cand_5992, 5998,
-    5999 -- los que cubren el donador críptico) son exactamente los 3 peores en
-    propiedades fisicoquímicas, y con un salto grande respecto del cuarto. O sea:
-    bloquear mejor y ser mejor oligo apuntan en direcciones opuestas.
-
-    Por eso el ranking NO puede devolver un ganador único sin que alguien decida
-    qué trade-off prefiere. Es la misma tensión que el Módulo 4 ya había
-    detectado entre accesibilidad y mecanismo, ahora medida sobre el efecto real
-    de bloqueo en vez de sobre la distancia a la variante.
+    Eran 10 hasta el 2026-08-01; la corrección de CRIT-4 (orientación de hebra
+    en la Tm) redujo el embudo de entrada de 44 a 16 candidatos.
     """
     res = rank(_real_candidates())
-    por_termo = sorted(res["candidates"], key=lambda c: c.objectives.thermo_quality)
+    assert res["n_eligible"] == 3
+    assert res["n_rejected"] == 13
 
-    tres_peores = {c.name for c in por_termo[:3]}
-    assert tres_peores == {"cand_5992", "cand_5998", "cand_5999"}
 
-    # Y son justamente los de bloqueo más fuerte.
-    assert all(c.objectives.block_strength >= 0.9999 for c in por_termo[:3])
+def test_datos_reales_el_frente_son_dos():
+    """Valor medido, no elegido: de los 3 elegibles, 2 quedan no dominados.
 
-    # El salto al cuarto es grande, no un empate técnico.
-    assert por_termo[3].objectives.thermo_quality - por_termo[2].objectives.thermo_quality > 20
+    `cand_5999` es el único dominado. Ojo con leer esto como una reducción
+    fuerte: con 3 candidatos y 3 dimensiones, que queden 2 está dentro de lo
+    esperable por azar (ver el hallazgo STAT-8 del panel de revisión).
+    """
+    res = rank(_real_candidates())
+    assert res["front"] == ["cand_5992", "cand_5998"]
+
+
+def test_cada_uno_del_frente_gana_en_algo_distinto():
+    """Es lo que hace interpretable al frente: no son empatados, son trade-offs."""
+    res = rank(_real_candidates())
+    front = {c.name: c.objectives for c in res["candidates"] if c.in_front}
+    assert len(front) == 2
+    # Ninguno domina al otro: cada uno gana al menos una dimensión.
+    a, b = front["cand_5992"], front["cand_5998"]
+    gana_a = sum(1 for d in ("block_strength", "offtarget_safety", "thermo_quality")
+                 if getattr(a, d) > getattr(b, d))
+    gana_b = sum(1 for d in ("block_strength", "offtarget_safety", "thermo_quality")
+                 if getattr(b, d) > getattr(a, d))
+    assert gana_a >= 1 and gana_b >= 1
+
+
+def test_los_tres_elegibles_cubren_el_donador():
+    """Tras corregir CRIT-4 ya no hay candidatos de 'solo aceptor'.
+
+    Los 7 que anulaban el aceptor sin cubrirlo -- el hallazgo que motivó el
+    ADR 0012 -- eran producto del filtro termodinámico con la hebra invertida.
+    Ninguno sobrevive al cálculo correcto.
+    """
+    res = rank(_real_candidates())
+    assert {c.name for c in res["candidates"]} == {"cand_5992", "cand_5998", "cand_5999"}
 
 
 def test_sensibilidad_el_colapso_termico_es_lo_que_discrimina():
     """Sin colapsar los dos percentiles, el frente pasa de 3 a 9 de 10: deja de
     informar. Esta es la justificación medida de esa convención."""
     s = rank(_real_candidates())["sensitivity"]
-    assert s["n_front_3d"] == 3
-    assert s["n_front_4d"] == 9
+    assert s["n_front_3d"] == 2
+    assert s["n_front_4d"] == 3
     assert s["n_front_4d"] > s["n_front_3d"]

@@ -1,6 +1,6 @@
 # Diseño in silico de oligonucleótidos antisentido para ABCA4 c.161-395G>A
 
-[![tests](https://img.shields.io/badge/tests-223%20pasando-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-224%20pasando-brightgreen)](#tests)
 [![estado](https://img.shields.io/badge/estado-prototipo%20de%20investigación-orange)](#️-lo-que-esto-no-es)
 [![validación](https://img.shields.io/badge/validación%20experimental-ninguna-red)](#️-lo-que-esto-no-es)
 
@@ -53,11 +53,11 @@ punta a punta.
 | 1 | `sequence.py` | ¿Dónde está exactamente la variante? | Coordenada confirmada por dos vías independientes |
 | 2 | `oligo_walk.py` | ¿Qué ventanas se podrían apuntar? | **381** candidatos |
 | 3 | `heuristic_filters.py` | ¿Cuáles son oligos viables (GC%, G-runs)? | 381 → **276** |
-| 4 | `thermodynamics.py` | ¿Cuáles se pegan bien y alcanzan la diana? | 276 → **44** ⚠️ *ver problemas conocidos* |
-| 5 | `off_target.py` | ¿Cuáles se parecen a otros genes humanos? | 44 anotados por severidad |
+| 4 | `thermodynamics.py` | ¿Cuáles se pegan bien y alcanzan la diana? | 276 → **16** |
+| 5 | `off_target.py` | ¿Cuáles se parecen a otros genes humanos? | 16 anotados por severidad |
 | 6 | `splice_neural.py` | ¿La variante crea realmente un sitio falso? | Donador críptico +1, aceptor −89 → 91 pb |
-| 6b | `aso_masking.py` | ¿Cada parche apaga el sitio falso? | **10** anulan el pseudoexón |
-| 7 | `ranking.py` | ¿Cuáles conviene sintetizar primero? | Frente de Pareto: **3** candidatos |
+| 6b | `aso_masking.py` | ¿Cada parche apaga el sitio falso? | **3** anulan el pseudoexón |
+| 7 | `ranking.py` | ¿Cuáles conviene sintetizar primero? | Frente de Pareto: **2** candidatos |
 
 ### El resultado más fuerte
 
@@ -69,12 +69,12 @@ mismo número. Es la afirmación que salió intacta de la revisión adversarial.
 
 | Predictor | Entrenado sobre | Veredicto (anula / sin efecto / daña) |
 |---|---|---|
-| SpliceAI (Illumina) | agnóstico de tejido | 10 / 34 / 0 |
-| Pangolin (U. Penn) | 4 tejidos, sin retina | 10 / 34 / 0 |
-| Retina-SpliceAI (Radboud UMC) | 503 muestras de retina humana | 10 / 34 / 0 |
-| **Control GTEx** | **el tejido equivocado, a propósito** | **10 / 34 / 0** |
+| SpliceAI (Illumina) | agnóstico de tejido | 3 / 13 / 0 |
+| Pangolin (U. Penn) | 4 tejidos, sin retina | 3 / 13 / 0 |
+| Retina-SpliceAI (Radboud UMC) | 503 muestras de retina humana | 3 / 13 / 0 |
+| **Control GTEx** | **el tejido equivocado, a propósito** | **3 / 13 / 0** |
 
-Los cuatro seleccionan **el mismo conjunto exacto** de 10 candidatos.
+Los cuatro seleccionan **el mismo conjunto exacto** de 3 candidatos.
 
 La cuarta fila es un **control negativo corrido después de la revisión adversarial**, y desmiente
 una afirmación previa del propio proyecto. La concordancia de tres predictores se presentaba como
@@ -179,7 +179,7 @@ python3 scripts/lint_vault.py
 scripts/run-in-env.sh python -m pytest tests/ -q
 ```
 
-**223 pasando, 0 fallando, 0 salteados.** Los valores que los tests verifican son los **medidos** en
+**224 pasando, 0 fallando, 0 salteados.** Los valores que los tests verifican son los **medidos** en
 corridas documentadas, no inventados — varios tests existen justamente para detectar que un refactor
 cambió en silencio un resultado ya publicado. Una auditoría de mutación durante la revisión mató 23
 de 29 bugs inyectados (79 %).
@@ -194,7 +194,7 @@ abiertos:**
 
 | ID | Problema | Impacto |
 |---|---|---|
-| **CRIT-4** | **Bug de orientación de hebra en la Tm.** Biopython exige la hebra de ARN para `R_DNA_NN1`; el código pasa el ASO | El embudo del Módulo 4 pasa de **44 a 16** candidatos, con solo 6 en común. Uno de los tres candidatos finales no habría sobrevivido. **Verificado de forma independiente.** |
+| ~~CRIT-4~~ | ✅ **CORREGIDO (2026-08-01).** La Tm se calcula sobre la hebra de ARN, como documenta Biopython | El embudo pasó de 44 a **16**. `cand_5882` (que estaba en el frente de Pareto) quedó eliminado. Resultados previos archivados en `data/results/pre-crit4-fix/`. **Esto disolvió la evidencia empírica de CRIT-2** — ver abajo |
 | **CRIT-1** | La calibración no aplica el criterio de selección del pipeline, y corre en dirección opuesta | El AUC de 0,974 mide el proxy de enmascarado, no el criterio de selección |
 | **CRIT-2** | La regla de "dos bordes" es operacionalmente una regla de un borde | Ningún candidato anula solo el donador, en ningún predictor. **Verificado.** |
 | **CRIT-3** | p = 5,96×10⁻⁵ asume independencia | Los 5 AONs eficaces conocidos se solapan sobre un único sitio; el p corregido es **0,03–0,11** |
@@ -202,7 +202,11 @@ abiertos:**
 | **CRIT-5** | Los 4 controles del enmascarado son invariantes a escala | Un predictor sin biología alguna pasa los cuatro |
 | **CRIT-7** | El pipeline no puede detectar desplazamiento de sitio de splicing | Puntúa 4 offsets fijos y descarta el resto del perfil |
 
-**Nada aguas abajo del Módulo 4 debe considerarse definitivo hasta resolver CRIT-4.**
+> **Consecuencia de corregir CRIT-4, dicha sin rodeos:** los 7 candidatos que anulaban el aceptor
+> sin cubrirlo — el hallazgo que motivó el criterio de veredicto del proyecto — eran producto de un
+> filtro termodinámico con las hebras invertidas. **Ninguno sobrevive al cálculo correcto.** El
+> argumento mecanístico sigue en pie; su evidencia empírica propia, no. Un bug del Módulo 4 viajó
+> cuatro módulos hacia arriba y generó un hallazgo, un ADR y una conclusión publicada.
 
 ### Lo que sobrevivió a la revisión
 
@@ -222,7 +226,7 @@ abiertos:**
 pipeline/        los 7 módulos + runners reproducibles
 backend/         FastAPI, un router por módulo
 frontend/        React + TypeScript, una pestaña por módulo
-tests/           223 tests
+tests/           224 tests
 scripts/         wrapper de entorno, linter de documentación
 docs/            informe de avance metodológico (LaTeX + PDF)
 data/results/    resultados generados (versionados)
