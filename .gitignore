@@ -23,9 +23,13 @@ data/reference/*
 # científicos publicados y sin ellas la calibración no es reproducible. El
 # suplemento en PDF/XLSX NO se versiona -- es material con copyright de
 # Elsevier; el README documenta cómo obtenerlo.
+# El CSV de secuencias NO se versiona: viene de un suplemento CC BY-NC-ND y la
+# cláusula "NC" chocaría con la licencia MIT de este repo. Se versiona el script
+# que lo extrae (pipeline/extract_kaltak_aons.py), que además deja la extracción
+# auditable en vez de ser un dato opaco.
 !data/reference/kaltak2023/
 data/reference/kaltak2023/*
-!data/reference/kaltak2023/aon_sequences.csv
+!data/reference/kaltak2023/PROCEDENCIA.md
 
 # --- Artefactos de LaTeX ---
 *.aux

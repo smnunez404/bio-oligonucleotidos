@@ -166,6 +166,9 @@ scripts/run-in-env.sh python pipeline/run_masking.py --predictor {spliceai|pango
 # Insumos del Módulo 7 (reproduce el CSV publicado byte a byte)
 scripts/run-in-env.sh python pipeline/run_modulo7_inputs.py
 
+# Secuencias de AON de Kaltak 2023 (no se versionan, ver NOTICE)
+scripts/run-in-env.sh python pipeline/extract_kaltak_aons.py
+
 # Calibración contra AONs de eficacia publicada
 scripts/run-in-env.sh python pipeline/run_calibration.py --predictor spliceai
 
@@ -274,5 +277,14 @@ ejecución de pipelines y redacción, bajo supervisión de los autores.
 
 ## Licencia
 
-Todavía sin definir. Hasta que se agregue un archivo de licencia, todos los derechos quedan
-reservados a los autores.
+**Código: [MIT](LICENSE).** Elegida sobre Apache-2.0 a propósito: Apache incluye una concesión
+expresa de derechos de patente, y este proyecto diseña candidatos terapéuticos sobre un terreno con
+cuestiones de libertad de operación documentadas. MIT es silencioso sobre patentes.
+
+**Datos generados por el pipeline** (`data/results/`) y el informe (`docs/`): **CC BY 4.0**.
+
+Ver [`NOTICE`](NOTICE) para las dependencias de terceros —incluidas las GPL-3.0, que **no se
+distribuyen** acá— y la procedencia de los datos externos.
+
+La licencia MIT cubre el **software**. No otorga derechos sobre las secuencias de oligonucleótido
+que el pipeline produce como salida, ni sobre patente alguna.

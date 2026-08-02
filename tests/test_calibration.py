@@ -72,15 +72,28 @@ def test_build_windows_reporta_los_no_ubicados():
 # --- secuencias de Kaltak -----------------------------------------------------
 
 
+def _aons_o_skip():
+    """Las secuencias no se versionan (suplemento CC BY-NC-ND, ver NOTICE).
+
+    En un clon nuevo hay que generarlas con
+    `python pipeline/extract_kaltak_aons.py`; si no están, estos tests se saltean
+    en vez de fallar.
+    """
+    try:
+        return load_aons()
+    except FileNotFoundError:
+        pytest.skip("faltan las secuencias de AON; correr pipeline/extract_kaltak_aons.py")
+
+
 def test_las_32_secuencias_estan_disponibles():
-    aons = load_aons()
+    aons = _aons_o_skip()
     assert len(aons) == 32
     assert {a["aon"] for a in aons} >= set(KNOWN_EFFECTIVE)
 
 
 def test_qr1011_es_aon44_con_su_secuencia_publicada():
     """Valor de la Tabla S1 de Kaltak et al. 2023, no inventado."""
-    aons = {a["aon"]: a for a in load_aons()}
+    aons = {a["aon"]: a for a in _aons_o_skip()}
     assert BEST_AON == "AON44"
     assert aons["AON44"]["secuencia_rna"] == "AUGCUCCAUGGGCCUCGG"
     assert int(aons["AON44"]["longitud_nt"]) == 18
@@ -90,7 +103,7 @@ def test_aon44_es_aon60_mas_una_base():
     """Verificación cruzada tabla-vs-prosa: el texto dice que AON44 es 'AON60 and
     its 1-nt longer version'. Si la extracción del PDF hubiera fallado, esto no
     daría."""
-    aons = {a["aon"]: a["secuencia_rna"] for a in load_aons()}
+    aons = {a["aon"]: a["secuencia_rna"] for a in _aons_o_skip()}
     assert aons["AON44"].endswith(aons["AON60"])
     assert len(aons["AON44"]) == len(aons["AON60"]) + 1
 
