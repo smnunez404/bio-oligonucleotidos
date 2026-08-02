@@ -57,18 +57,106 @@
  ],
  "block_retention": 0.25,
  "canonical_safe_retention": 0.8,
- "n_candidates": 16,
+ "n_candidates": 78,
  "distribution_donor_only": {
   "bloquea": 3,
-  "sin_efecto": 13,
+  "sin_efecto": 75,
   "contraproducente": 0
  },
  "distribution": {
-  "anula_pseudoexon": 3,
-  "sin_efecto": 13,
+  "anula_pseudoexon": 11,
+  "sin_efecto": 67,
   "daña_canonico": 0
  },
  "useful_candidates": [
+  {
+   "name": "cand_5876",
+   "start_rel": -124,
+   "end_rel": -104,
+   "borders": [
+    "aceptor"
+   ],
+   "retention_donor": 0.6336,
+   "retention_acceptor": 0.053,
+   "retention_canonical": 1.0
+  },
+  {
+   "name": "cand_5877",
+   "start_rel": -123,
+   "end_rel": -103,
+   "borders": [
+    "aceptor"
+   ],
+   "retention_donor": 0.6292,
+   "retention_acceptor": 0.1166,
+   "retention_canonical": 1.0
+  },
+  {
+   "name": "cand_5878",
+   "start_rel": -122,
+   "end_rel": -102,
+   "borders": [
+    "aceptor"
+   ],
+   "retention_donor": 0.6127,
+   "retention_acceptor": 0.0548,
+   "retention_canonical": 1.0
+  },
+  {
+   "name": "cand_5879",
+   "start_rel": -121,
+   "end_rel": -101,
+   "borders": [
+    "aceptor"
+   ],
+   "retention_donor": 0.635,
+   "retention_acceptor": 0.0184,
+   "retention_canonical": 1.0
+  },
+  {
+   "name": "cand_5880",
+   "start_rel": -120,
+   "end_rel": -100,
+   "borders": [
+    "aceptor"
+   ],
+   "retention_donor": 0.6015,
+   "retention_acceptor": 0.0263,
+   "retention_canonical": 1.0001
+  },
+  {
+   "name": "cand_5881",
+   "start_rel": -119,
+   "end_rel": -99,
+   "borders": [
+    "aceptor"
+   ],
+   "retention_donor": 0.6096,
+   "retention_acceptor": 0.0508,
+   "retention_canonical": 1.0001
+  },
+  {
+   "name": "cand_5882",
+   "start_rel": -118,
+   "end_rel": -98,
+   "borders": [
+    "aceptor"
+   ],
+   "retention_donor": 0.654,
+   "retention_acceptor": 0.0154,
+   "retention_canonical": 1.0
+  },
+  {
+   "name": "cand_5883",
+   "start_rel": -117,
+   "end_rel": -97,
+   "borders": [
+    "aceptor"
+   ],
+   "retention_donor": 0.6812,
+   "retention_acceptor": 0.0607,
+   "retention_canonical": 1.0
+  },
   {
    "name": "cand_5992",
    "start_rel": -8,

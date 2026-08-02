@@ -2,7 +2,7 @@
  "padding": 6000,
  "variant_offset": 6000,
  "region_nt": 12001,
- "n": 16,
+ "n": 78,
  "windows": [
   {
    "name": "cand_5816",
@@ -15,6 +15,36 @@
    "start": 5817,
    "end": 5837,
    "aso_sequence": "ACATTCACCACATAGAGGGC"
+  },
+  {
+   "name": "cand_5818",
+   "start": 5818,
+   "end": 5838,
+   "aso_sequence": "CACATTCACCACATAGAGGG"
+  },
+  {
+   "name": "cand_5819",
+   "start": 5819,
+   "end": 5839,
+   "aso_sequence": "CCACATTCACCACATAGAGG"
+  },
+  {
+   "name": "cand_5820",
+   "start": 5820,
+   "end": 5840,
+   "aso_sequence": "TCCACATTCACCACATAGAG"
+  },
+  {
+   "name": "cand_5821",
+   "start": 5821,
+   "end": 5841,
+   "aso_sequence": "TTCCACATTCACCACATAGA"
+  },
+  {
+   "name": "cand_5822",
+   "start": 5822,
+   "end": 5842,
+   "aso_sequence": "CTTCCACATTCACCACATAG"
   },
   {
    "name": "cand_5823",
@@ -33,6 +63,168 @@
    "start": 5825,
    "end": 5845,
    "aso_sequence": "AGGCTTCCACATTCACCACA"
+  },
+  {
+   "name": "cand_5842",
+   "start": 5842,
+   "end": 5862,
+   "aso_sequence": "GATTTGCATAACGCTTGAGG"
+  },
+  {
+   "name": "cand_5843",
+   "start": 5843,
+   "end": 5863,
+   "aso_sequence": "AGATTTGCATAACGCTTGAG"
+  },
+  {
+   "name": "cand_5844",
+   "start": 5844,
+   "end": 5864,
+   "aso_sequence": "CAGATTTGCATAACGCTTGA"
+  },
+  {
+   "name": "cand_5856",
+   "start": 5856,
+   "end": 5876,
+   "aso_sequence": "TAGAGGACTGGGCAGATTTG"
+  },
+  {
+   "name": "cand_5857",
+   "start": 5857,
+   "end": 5877,
+   "aso_sequence": "ATAGAGGACTGGGCAGATTT"
+  },
+  {
+   "name": "cand_5858",
+   "start": 5858,
+   "end": 5878,
+   "aso_sequence": "AATAGAGGACTGGGCAGATT"
+  },
+  {
+   "name": "cand_5859",
+   "start": 5859,
+   "end": 5879,
+   "aso_sequence": "GAATAGAGGACTGGGCAGAT"
+  },
+  {
+   "name": "cand_5860",
+   "start": 5860,
+   "end": 5880,
+   "aso_sequence": "AGAATAGAGGACTGGGCAGA"
+  },
+  {
+   "name": "cand_5861",
+   "start": 5861,
+   "end": 5881,
+   "aso_sequence": "AAGAATAGAGGACTGGGCAG"
+  },
+  {
+   "name": "cand_5862",
+   "start": 5862,
+   "end": 5882,
+   "aso_sequence": "CAAGAATAGAGGACTGGGCA"
+  },
+  {
+   "name": "cand_5863",
+   "start": 5863,
+   "end": 5883,
+   "aso_sequence": "TCAAGAATAGAGGACTGGGC"
+  },
+  {
+   "name": "cand_5864",
+   "start": 5864,
+   "end": 5884,
+   "aso_sequence": "ATCAAGAATAGAGGACTGGG"
+  },
+  {
+   "name": "cand_5865",
+   "start": 5865,
+   "end": 5885,
+   "aso_sequence": "GATCAAGAATAGAGGACTGG"
+  },
+  {
+   "name": "cand_5866",
+   "start": 5866,
+   "end": 5886,
+   "aso_sequence": "AGATCAAGAATAGAGGACTG"
+  },
+  {
+   "name": "cand_5868",
+   "start": 5868,
+   "end": 5888,
+   "aso_sequence": "GAAGATCAAGAATAGAGGAC"
+  },
+  {
+   "name": "cand_5870",
+   "start": 5870,
+   "end": 5890,
+   "aso_sequence": "GTGAAGATCAAGAATAGAGG"
+  },
+  {
+   "name": "cand_5871",
+   "start": 5871,
+   "end": 5891,
+   "aso_sequence": "GGTGAAGATCAAGAATAGAG"
+  },
+  {
+   "name": "cand_5876",
+   "start": 5876,
+   "end": 5896,
+   "aso_sequence": "GAGAAGGTGAAGATCAAGAA"
+  },
+  {
+   "name": "cand_5877",
+   "start": 5877,
+   "end": 5897,
+   "aso_sequence": "CGAGAAGGTGAAGATCAAGA"
+  },
+  {
+   "name": "cand_5878",
+   "start": 5878,
+   "end": 5898,
+   "aso_sequence": "ACGAGAAGGTGAAGATCAAG"
+  },
+  {
+   "name": "cand_5879",
+   "start": 5879,
+   "end": 5899,
+   "aso_sequence": "AACGAGAAGGTGAAGATCAA"
+  },
+  {
+   "name": "cand_5880",
+   "start": 5880,
+   "end": 5900,
+   "aso_sequence": "GAACGAGAAGGTGAAGATCA"
+  },
+  {
+   "name": "cand_5881",
+   "start": 5881,
+   "end": 5901,
+   "aso_sequence": "TGAACGAGAAGGTGAAGATC"
+  },
+  {
+   "name": "cand_5882",
+   "start": 5882,
+   "end": 5902,
+   "aso_sequence": "ATGAACGAGAAGGTGAAGAT"
+  },
+  {
+   "name": "cand_5883",
+   "start": 5883,
+   "end": 5903,
+   "aso_sequence": "CATGAACGAGAAGGTGAAGA"
+  },
+  {
+   "name": "cand_5942",
+   "start": 5942,
+   "end": 5962,
+   "aso_sequence": "GGAGAGGTAAAGAAGAGTCT"
+  },
+  {
+   "name": "cand_5943",
+   "start": 5943,
+   "end": 5963,
+   "aso_sequence": "GGGAGAGGTAAAGAAGAGTC"
   },
   {
    "name": "cand_5992",
@@ -99,6 +291,186 @@
    "start": 6024,
    "end": 6044,
    "aso_sequence": "ACGCTCGTCTATTCCTTCAA"
+  },
+  {
+   "name": "cand_6062",
+   "start": 6062,
+   "end": 6082,
+   "aso_sequence": "AAGAAGACTCCACGCAGTTG"
+  },
+  {
+   "name": "cand_6063",
+   "start": 6063,
+   "end": 6083,
+   "aso_sequence": "CAAGAAGACTCCACGCAGTT"
+  },
+  {
+   "name": "cand_6064",
+   "start": 6064,
+   "end": 6084,
+   "aso_sequence": "TCAAGAAGACTCCACGCAGT"
+  },
+  {
+   "name": "cand_6065",
+   "start": 6065,
+   "end": 6085,
+   "aso_sequence": "TTCAAGAAGACTCCACGCAG"
+  },
+  {
+   "name": "cand_6066",
+   "start": 6066,
+   "end": 6086,
+   "aso_sequence": "GTTCAAGAAGACTCCACGCA"
+  },
+  {
+   "name": "cand_6067",
+   "start": 6067,
+   "end": 6087,
+   "aso_sequence": "AGTTCAAGAAGACTCCACGC"
+  },
+  {
+   "name": "cand_6068",
+   "start": 6068,
+   "end": 6088,
+   "aso_sequence": "TAGTTCAAGAAGACTCCACG"
+  },
+  {
+   "name": "cand_6069",
+   "start": 6069,
+   "end": 6089,
+   "aso_sequence": "TTAGTTCAAGAAGACTCCAC"
+  },
+  {
+   "name": "cand_6070",
+   "start": 6070,
+   "end": 6090,
+   "aso_sequence": "GTTAGTTCAAGAAGACTCCA"
+  },
+  {
+   "name": "cand_6071",
+   "start": 6071,
+   "end": 6091,
+   "aso_sequence": "TGTTAGTTCAAGAAGACTCC"
+  },
+  {
+   "name": "cand_6072",
+   "start": 6072,
+   "end": 6092,
+   "aso_sequence": "GTGTTAGTTCAAGAAGACTC"
+  },
+  {
+   "name": "cand_6074",
+   "start": 6074,
+   "end": 6094,
+   "aso_sequence": "GAGTGTTAGTTCAAGAAGAC"
+  },
+  {
+   "name": "cand_6137",
+   "start": 6137,
+   "end": 6157,
+   "aso_sequence": "ATGGGTGGAAATGTGAAGGG"
+  },
+  {
+   "name": "cand_6138",
+   "start": 6138,
+   "end": 6158,
+   "aso_sequence": "CATGGGTGGAAATGTGAAGG"
+  },
+  {
+   "name": "cand_6139",
+   "start": 6139,
+   "end": 6159,
+   "aso_sequence": "GCATGGGTGGAAATGTGAAG"
+  },
+  {
+   "name": "cand_6140",
+   "start": 6140,
+   "end": 6160,
+   "aso_sequence": "GGCATGGGTGGAAATGTGAA"
+  },
+  {
+   "name": "cand_6141",
+   "start": 6141,
+   "end": 6161,
+   "aso_sequence": "AGGCATGGGTGGAAATGTGA"
+  },
+  {
+   "name": "cand_6142",
+   "start": 6142,
+   "end": 6162,
+   "aso_sequence": "TAGGCATGGGTGGAAATGTG"
+  },
+  {
+   "name": "cand_6143",
+   "start": 6143,
+   "end": 6163,
+   "aso_sequence": "ATAGGCATGGGTGGAAATGT"
+  },
+  {
+   "name": "cand_6144",
+   "start": 6144,
+   "end": 6164,
+   "aso_sequence": "AATAGGCATGGGTGGAAATG"
+  },
+  {
+   "name": "cand_6145",
+   "start": 6145,
+   "end": 6165,
+   "aso_sequence": "TAATAGGCATGGGTGGAAAT"
+  },
+  {
+   "name": "cand_6146",
+   "start": 6146,
+   "end": 6166,
+   "aso_sequence": "GTAATAGGCATGGGTGGAAA"
+  },
+  {
+   "name": "cand_6147",
+   "start": 6147,
+   "end": 6167,
+   "aso_sequence": "TGTAATAGGCATGGGTGGAA"
+  },
+  {
+   "name": "cand_6148",
+   "start": 6148,
+   "end": 6168,
+   "aso_sequence": "TTGTAATAGGCATGGGTGGA"
+  },
+  {
+   "name": "cand_6149",
+   "start": 6149,
+   "end": 6169,
+   "aso_sequence": "GTTGTAATAGGCATGGGTGG"
+  },
+  {
+   "name": "cand_6150",
+   "start": 6150,
+   "end": 6170,
+   "aso_sequence": "TGTTGTAATAGGCATGGGTG"
+  },
+  {
+   "name": "cand_6155",
+   "start": 6155,
+   "end": 6175,
+   "aso_sequence": "ACGGATGTTGTAATAGGCAT"
+  },
+  {
+   "name": "cand_6156",
+   "start": 6156,
+   "end": 6176,
+   "aso_sequence": "GACGGATGTTGTAATAGGCA"
+  },
+  {
+   "name": "cand_6157",
+   "start": 6157,
+   "end": 6177,
+   "aso_sequence": "AGACGGATGTTGTAATAGGC"
+  },
+  {
+   "name": "cand_6158",
+   "start": 6158,
+   "end": 6178,
+   "aso_sequence": "CAGACGGATGTTGTAATAGG"
   }
  ]
 }

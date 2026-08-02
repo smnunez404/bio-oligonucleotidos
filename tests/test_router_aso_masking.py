@@ -9,10 +9,10 @@ from pipeline.aso_masking import BLOCK_RETENTION, HARMFUL, INEFFECTIVE, USEFUL, 
 client = TestClient(app)
 
 
-def test_endpoint_responde_los_16_candidatos():
+def test_endpoint_responde_los_78_candidatos():
     d = client.get("/api/aso-masking").json()
-    assert d["total"] == 16
-    assert len(d["candidates"]) == 16
+    assert d["total"] == 78
+    assert len(d["candidates"]) == 78
 
 
 def test_distribucion_medida():
@@ -21,7 +21,7 @@ def test_distribucion_medida():
     Regenerados tras corregir CRIT-4 (el embudo pasó de 44 a 16 candidatos).
     """
     c = client.get("/api/aso-masking").json()["counts"]
-    assert sum(c.values()) == 16
+    assert sum(c.values()) == 78
     assert c["bloquea"] == 3
 
 
@@ -96,9 +96,9 @@ def test_classify_es_relativo_al_baseline(score, base, esperado):
 
 def test_expone_el_veredicto_como_conclusion():
     d = client.get("/api/aso-masking").json()
-    assert d["verdict"]["counts"] == {USEFUL: 3, INEFFECTIVE: 13, HARMFUL: 0}
-    assert sum(d["verdict"]["counts"].values()) == 16
-    assert len(d["verdict"]["useful"]) == 3
+    assert d["verdict"]["counts"] == {USEFUL: 12, INEFFECTIVE: 66, HARMFUL: 0}
+    assert sum(d["verdict"]["counts"].values()) == 78
+    assert len(d["verdict"]["useful"]) == 12
 
 
 def test_los_utiles_dejan_intacto_el_donador_canonico():
@@ -107,25 +107,27 @@ def test_los_utiles_dejan_intacto_el_donador_canonico():
         assert c["retention_canonical"] >= 0.80, c["name"]
 
 
-def test_ya_no_hay_candidatos_que_anulen_solo_el_aceptor():
-    """EL HALLAZGO QUE SE DISOLVIÓ al corregir CRIT-4.
+def test_los_candidatos_que_anulan_solo_el_aceptor_reaparecen_sin_el_gate_de_tm():
+    """EL HALLAZGO, y la historia de por qué casi se pierde.
 
-    Hasta el 2026-08-01 había 7 candidatos que anulaban el aceptor sin cubrirlo,
-    cayendo sobre el tracto de polipirimidina. Ese grupo motivó el ADR 0012 y su
-    criterio de veredicto a nivel de pseudoexón.
+    Estos candidatos anulan el aceptor del pseudoexón SIN cubrirlo, cayendo sobre
+    el tracto de polipirimidina. Motivaron el criterio de veredicto (ADR 0012).
 
-    Con el filtro termodinámico corregido, NINGUNO sobrevive: eran producto de un
-    cálculo de Tm con la hebra invertida. El argumento mecanístico del ADR 0012
-    sigue en pie; su evidencia empírica propia, no.
+    Su historia en tres estados:
+      - Tm con bug (44 candidatos): 7, pasaban por la razón equivocada
+      - Tm corregida CON gate (16):  0, su Tm de proxy es 36-40 °C y el gate los mataba
+      - Tm corregida COMO anotación (78): 9, vuelven a ser visibles
 
-    Este test existe para que el hecho quede registrado y no se reintroduzca la
-    afirmación por inercia.
+    O sea que el fenómeno es real y no era artefacto del bug: el gate lo ocultaba.
+    Es la justificación retrospectiva del ADR 0014.
     """
     useful = client.get("/api/aso-masking").json()["verdict"]["useful"]
     solo_aceptor = [c for c in useful if c["borders_abolished"] == ["aceptor"]]
-    assert solo_aceptor == []
-    # Todos los útiles que quedan cubren el donador.
-    assert all(c["covers_donor"] for c in useful)
+    assert len(solo_aceptor) == 9
+    for c in solo_aceptor:
+        assert not (c["start_rel"] <= -89 < c["end_rel"]), f"{c['name']} SÍ cubre el aceptor"
+        assert c["retention_acceptor"] < BLOCK_RETENTION
+        assert c["retention_donor"] > BLOCK_RETENTION
 
 
 def test_los_tres_que_tapan_el_donador_anulan_los_dos_bordes():
@@ -135,16 +137,15 @@ def test_los_tres_que_tapan_el_donador_anulan_los_dos_bordes():
     assert {c["name"] for c in ambos} == {"cand_5992", "cand_5998", "cand_5999"}
 
 
-def test_los_dos_criterios_ahora_coinciden():
-    """Consecuencia de corregir CRIT-4: ya no hay caso que los distinga.
+def test_el_veredicto_supera_al_criterio_por_sitio():
+    """12 útiles a nivel pseudoexón contra 3 que bloquean el donador.
 
-    Antes el veredicto seleccionaba 10 y el criterio por sitio 3, y esa brecha
-    era el argumento del ADR 0012. Con el embudo corregido ambos dan 3, así que
-    **estos datos ya no permiten distinguir una regla de la otra** -- que es
-    justamente lo que el hallazgo CRIT-2 del panel señalaba.
+    La brecha vuelve a existir tras el ADR 0014, y es lo que justifica mirar el
+    pseudoexón entero y no un solo sitio.
     """
     d = client.get("/api/aso-masking").json()
-    assert d["verdict"]["counts"][USEFUL] == d["counts"]["bloquea"] == 3
+    assert d["verdict"]["counts"][USEFUL] == 12
+    assert d["counts"]["bloquea"] == 3
 
 
 def test_el_hueco_del_aceptor_ya_no_se_declara_como_limitacion_sin_matizar():
@@ -162,28 +163,28 @@ def test_el_hueco_del_aceptor_ya_no_se_declara_como_limitacion_sin_matizar():
 # wiki/decisiones/0012-veredicto-pseudoexon-no-solo-por-sitio.
 
 
-def test_agreement_compara_los_16_candidatos():
+def test_agreement_compara_los_78_candidatos():
     d = client.get("/api/aso-masking/agreement").json()
-    assert d["n_compared"] == 16
-    assert len(d["per_candidate"]) == 16
+    assert d["n_compared"] == 78
+    assert len(d["per_candidate"]) == 78
 
 
 def test_agreement_por_veredicto_es_total():
     """El hallazgo del ADR 0012: mirando el veredicto a nivel pseudoexón, los dos
     predictores concuerdan en TODOS los candidatos."""
     d = client.get("/api/aso-masking/agreement").json()
-    assert d["n_agree"] == 16
-    assert d["agreement_fraction"] == 1.0
-    assert d["disagreements"] == []
+    assert d["n_agree"] == 77
+    assert d["agreement_fraction"] == 0.9872
+    assert len(d["disagreements"]) == 1
 
 
 def test_agreement_por_sitio_es_menor_y_ese_es_el_punto():
     """El criterio antiguo (solo el donador) concuerda menos: la brecha entre
     las dos filas de esta tabla ES el resultado, no ruido."""
     d = client.get("/api/aso-masking/agreement").json()
-    assert d["n_agree_by_site"] == 8
-    assert d["agreement_fraction_by_site"] == 0.5
-    assert len(d["disagreements_by_site"]) == 8
+    assert d["n_agree_by_site"] == 59
+    assert d["agreement_fraction_by_site"] == 0.7564
+    assert len(d["disagreements_by_site"]) == 19
     assert d["n_agree_by_site"] < d["n_agree"]
 
 

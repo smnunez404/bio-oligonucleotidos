@@ -50,11 +50,11 @@ also means **there is no positive control** with which to validate the pipeline 
 | 1 | `sequence.py` | Where exactly is the variant? | Coordinate confirmed via two independent routes |
 | 2 | `oligo_walk.py` | Which windows could be targeted? | **381** candidates |
 | 3 | `heuristic_filters.py` | Which are viable oligos (GC%, G-runs)? | 381 → **276** |
-| 4 | `thermodynamics.py` | Which bind well and reach the target? | 276 → **16** |
-| 5 | `off_target.py` | Which resemble other human genes? | 16 annotated by severity |
+| 4 | `thermodynamics.py` | Which bind well and reach the target? | 276 → **78** |
+| 5 | `off_target.py` | Which resemble other human genes? | 78 annotated by severity |
 | 6 | `splice_neural.py` | Does the variant really create a false site? | Cryptic donor +1, acceptor −89 → 91 bp |
-| 6b | `aso_masking.py` | Does each patch switch the false site off? | **3** abolish the pseudoexon |
-| 7 | `ranking.py` | Which are worth synthesising first? | Pareto front: **2** candidates |
+| 6b | `aso_masking.py` | Does each patch switch the false site off? | **12** abolish the pseudoexon |
+| 7 | `ranking.py` | Which are worth synthesising first? | Pareto front: **3** candidates |
 
 ### Strongest result
 
@@ -66,12 +66,12 @@ the claim that survived adversarial review untouched.
 
 | Predictor | Trained on | Verdict (abolish / no effect / harms) |
 |---|---|---|
-| SpliceAI (Illumina) | tissue-agnostic | 3 / 13 / 0 |
-| Pangolin (U. Penn) | 4 tissues, no retina | 3 / 13 / 0 |
-| Retina-SpliceAI (Radboud UMC) | 503 human retina samples | 3 / 13 / 0 |
-| **GTEx control** | **deliberately the wrong tissue** | **3 / 13 / 0** |
+| SpliceAI (Illumina) | tissue-agnostic | 12 / 66 / 0 |
+| Pangolin (U. Penn) | 4 tissues, no retina | 12 / 66 / 0 |
+| Retina-SpliceAI (Radboud UMC) | 503 human retina samples | 12 / 66 / 0 |
+| **GTEx control** | **deliberately the wrong tissue** | **11 / 67 / 0** |
 
-All four select the **same exact set** of 3 candidates.
+The four **no longer agree exactly**: 12 / 11 / 11 / 11, with a common core of 11 and one candidate seen only by SpliceAI. The earlier perfect agreement was partly an artefact of small, heavily filtered candidate sets.
 
 The fourth row is a **negative control run after adversarial review**, and it undercuts the
 project's own earlier claim. The three-predictor agreement was presented as cross-validation; a

@@ -53,11 +53,11 @@ punta a punta.
 | 1 | `sequence.py` | ¿Dónde está exactamente la variante? | Coordenada confirmada por dos vías independientes |
 | 2 | `oligo_walk.py` | ¿Qué ventanas se podrían apuntar? | **381** candidatos |
 | 3 | `heuristic_filters.py` | ¿Cuáles son oligos viables (GC%, G-runs)? | 381 → **276** |
-| 4 | `thermodynamics.py` | ¿Cuáles se pegan bien y alcanzan la diana? | 276 → **16** |
-| 5 | `off_target.py` | ¿Cuáles se parecen a otros genes humanos? | 16 anotados por severidad |
+| 4 | `thermodynamics.py` | ¿Cuáles se pegan bien y alcanzan la diana? | 276 → **78** |
+| 5 | `off_target.py` | ¿Cuáles se parecen a otros genes humanos? | 78 anotados por severidad |
 | 6 | `splice_neural.py` | ¿La variante crea realmente un sitio falso? | Donador críptico +1, aceptor −89 → 91 pb |
-| 6b | `aso_masking.py` | ¿Cada parche apaga el sitio falso? | **3** anulan el pseudoexón |
-| 7 | `ranking.py` | ¿Cuáles conviene sintetizar primero? | Frente de Pareto: **2** candidatos |
+| 6b | `aso_masking.py` | ¿Cada parche apaga el sitio falso? | **12** anulan el pseudoexón |
+| 7 | `ranking.py` | ¿Cuáles conviene sintetizar primero? | Frente de Pareto: **3** candidatos |
 
 ### El resultado más fuerte
 
@@ -69,12 +69,12 @@ mismo número. Es la afirmación que salió intacta de la revisión adversarial.
 
 | Predictor | Entrenado sobre | Veredicto (anula / sin efecto / daña) |
 |---|---|---|
-| SpliceAI (Illumina) | agnóstico de tejido | 3 / 13 / 0 |
-| Pangolin (U. Penn) | 4 tejidos, sin retina | 3 / 13 / 0 |
-| Retina-SpliceAI (Radboud UMC) | 503 muestras de retina humana | 3 / 13 / 0 |
-| **Control GTEx** | **el tejido equivocado, a propósito** | **3 / 13 / 0** |
+| SpliceAI (Illumina) | agnóstico de tejido | 12 / 66 / 0 |
+| Pangolin (U. Penn) | 4 tejidos, sin retina | 12 / 66 / 0 |
+| Retina-SpliceAI (Radboud UMC) | 503 muestras de retina humana | 12 / 66 / 0 |
+| **Control GTEx** | **el tejido equivocado, a propósito** | **11 / 67 / 0** |
 
-Los cuatro seleccionan **el mismo conjunto exacto** de 3 candidatos.
+Los cuatro **ya no coinciden exactamente**: 12 / 11 / 11 / 11, con un núcleo común de 11 y un candidato que solo ve SpliceAI. La concordancia perfecta anterior era en parte artefacto de conjuntos chicos y muy filtrados.
 
 La cuarta fila es un **control negativo corrido después de la revisión adversarial**, y desmiente
 una afirmación previa del propio proyecto. La concordancia de tres predictores se presentaba como

@@ -56,14 +56,14 @@ def test_low_tm_oligo_is_flagged():
     # AT puro -> Tm muy baja.
     r = analyze_candidate(_candidate("ATATATATATATATATATAT"))
     assert r.tm < TM_MIN
-    assert any("Tm baja" in m for m in r.reasons)
+    assert r.tm_flag == "baja"  # ADR 0014: anota, no descarta
 
 
 def test_high_tm_oligo_is_flagged():
     # GC puro -> Tm muy alta.
     r = analyze_candidate(_candidate("GCGCGCGCGCGCGCGCGCGC"))
     assert r.tm > TM_MAX
-    assert any("Tm alta" in m for m in r.reasons)
+    assert r.tm_flag == "alta"  # ADR 0014: anota, no descarta
 
 
 def test_passed_is_true_only_when_no_reasons():
@@ -160,8 +160,8 @@ def test_crit4_la_tm_se_calcula_sobre_la_diana_no_sobre_el_aso():
 
 
 @pytest.mark.network
-def test_crit4_el_embudo_corregido_son_16_candidatos():
-    """Valor medido tras la corrección (antes eran 44, con solo 6 en común).
+def test_el_embudo_son_78_candidatos():
+    """Valor medido tras corregir CRIT-4 y aplicar el ADR 0014 (Tm anota, no filtra).
 
     Si esto cambia, algo movió el filtro termodinámico y hay que regenerar todo
     `data/results/`.
@@ -175,4 +175,4 @@ def test_crit4_el_embudo_corregido_son_16_candidatos():
     results = analyze_candidates(survivors, target_sequence=region.mutant_sense)
 
     assert len(survivors) == 276
-    assert sum(1 for r in results if r.passed) == 16
+    assert sum(1 for r in results if r.passed) == 78

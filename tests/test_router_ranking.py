@@ -13,9 +13,9 @@ client = TestClient(app)
 
 def test_el_frente_son_los_tres_medidos():
     d = client.get("/api/ranking").json()
-    assert d["front"] == ["cand_5992", "cand_5998"]
-    assert d["n_eligible"] == 3
-    assert d["n_rejected"] == 13
+    assert d["front"] == ["cand_5882", "cand_5992", "cand_5998"]
+    assert d["n_eligible"] == 12
+    assert d["n_rejected"] == 66
 
 
 def test_expone_las_tres_dimensiones_con_su_modulo_de_origen():
@@ -49,10 +49,10 @@ def test_el_frente_va_primero():
 
 def test_filtro_only_front():
     d = client.get("/api/ranking?only_front=true").json()
-    assert len(d["candidates"]) == 2
+    assert len(d["candidates"]) == 3
     assert all(c["in_front"] for c in d["candidates"])
     # El resumen no cambia: sigue diciendo cuántos había en total.
-    assert d["n_eligible"] == 3
+    assert d["n_eligible"] == 12
 
 
 def test_declara_que_no_usa_pesos_y_por_que():
@@ -70,8 +70,8 @@ def test_expone_el_analisis_de_sensibilidad():
     """El plan pedía sensibilidad explícita: sin colapsar los percentiles
     térmicos el frente pasa de 3 a 9, o sea deja de discriminar."""
     s = client.get("/api/ranking").json()["sensitivity"]
-    assert s["n_front_3d"] == 2
-    assert s["n_front_4d"] == 3
+    assert s["n_front_3d"] == 3
+    assert s["n_front_4d"] == 11
 
 
 def test_declara_las_limitaciones_y_la_procedencia_verificada():
@@ -82,6 +82,6 @@ def test_declara_las_limitaciones_y_la_procedencia_verificada():
 
 
 def test_ningun_candidato_no_elegible_aparece_en_la_salida():
-    """Los 13 que no anulan el pseudoexón no se rankean: no compiten."""
+    """Los 66 que no anulan el pseudoexón no se rankean: no compiten."""
     d = client.get("/api/ranking").json()
-    assert len(d["candidates"]) == 3
+    assert len(d["candidates"]) == 12

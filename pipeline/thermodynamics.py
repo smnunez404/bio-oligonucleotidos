@@ -48,6 +48,23 @@ from .oligo_walk import OligoCandidate
 # Por eso estos umbrales se usan como SEÑALES, no como verdad absoluta, y
 # además se reporta el percentil relativo de cada candidato — que sí es
 # comparable porque todos se midieron con el mismo método.
+# Banda ORIENTATIVA de Tm, NO un filtro (ver ADR 0014).
+#
+# Estos valores se heredaron de las fuentes de diseño de ASO y durante un tiempo
+# descartaban candidatos. Dejaron de hacerlo el 2026-08-01 porque el número al
+# que se comparan no es interpretable para química PMO:
+#
+#   - `R_DNA_NN1` es una tabla de híbrido ARN/ADN; no hay parámetros
+#     nearest-neighbor publicados para esqueleto neutro.
+#   - La evidencia experimental muestra que el enlace fosforodiamidato
+#     ESTABILIZA el dúplex PMO:ARN, así que el proxy SUBESTIMA la Tm real.
+#   - La corrección salina de Biopython supone esqueleto cargado y también
+#     subestima: los dos sesgos empujan en la misma dirección y se acumulan.
+#   - Las mediciones publicadas de Tm de PMO se hacen en 1,0 M NaCl, lejos de
+#     los ~50 mM que asume el cálculo por defecto.
+#
+# Se conservan para ANOTAR (`tm_flag`) y para que el percentil relativo tenga un
+# punto de referencia legible, no para decidir.
 TM_MIN = 50.0  # °C
 TM_MAX = 65.0  # °C
 HAIRPIN_DG_LIMIT = -3.0  # más negativo que esto = horquilla demasiado estable
@@ -90,6 +107,10 @@ class ThermoResult:
     # 100 = el mejor del lote en esa métrica.
     accessibility_percentile: float | None = None
     homodimer_percentile: float | None = None
+    tm_percentile: float | None = None
+    # "baja" | "en_banda" | "alta" respecto de la banda orientativa TM_MIN-TM_MAX.
+    # Es anotación para el ranking, no un veredicto (ADR 0014).
+    tm_flag: str = "en_banda"
 
 
 def _assign_percentiles(results: list["ThermoResult"]) -> None:
@@ -113,6 +134,13 @@ def _assign_percentiles(results: list["ThermoResult"]) -> None:
     homodimer_pct = rank([r.dg_homodimer for r in results], higher_is_better=True)
     for r, p in zip(results, homodimer_pct):
         r.homodimer_percentile = p
+
+    # Tm: para un bloqueador estérico, unir con más fuerza es mejor -- no hay
+    # mecanismo de RNasa H al que una afinidad excesiva pueda perjudicar. Por eso
+    # el percentil es "más alta = mejor" y no "más cerca del centro de la banda".
+    tm_pct = rank([r.tm for r in results], higher_is_better=True)
+    for r, p in zip(results, tm_pct):
+        r.tm_percentile = p
 
     with_acc = [r for r in results if r.accessibility is not None]
     if with_acc:
@@ -185,10 +213,14 @@ def analyze_candidate(
             accessibility = None
 
     reasons = []
+    # La Tm ANOTA, no descarta (ADR 0014). Misma lógica que el ADR 0006 aplicó
+    # al off-target: un criterio que no se puede interpretar no debe decidir.
     if tm < TM_MIN:
-        reasons.append(f"Tm baja ({tm:.1f} °C < {TM_MIN:.0f} °C)")
-    if tm > TM_MAX:
-        reasons.append(f"Tm alta ({tm:.1f} °C > {TM_MAX:.0f} °C)")
+        tm_flag = "baja"
+    elif tm > TM_MAX:
+        tm_flag = "alta"
+    else:
+        tm_flag = "en_banda"
     if dg_self_structure <= HAIRPIN_DG_LIMIT:
         reasons.append(
             f"horquilla demasiado estable ({dg_self_structure:.1f} ≤ {HAIRPIN_DG_LIMIT:.0f} kcal/mol)"
@@ -207,6 +239,7 @@ def analyze_candidate(
         accessibility=accessibility,
         passed=len(reasons) == 0,
         reasons=reasons,
+        tm_flag=tm_flag,
     )
 
 

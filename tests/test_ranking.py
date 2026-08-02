@@ -199,8 +199,8 @@ def test_datos_reales_tres_elegibles():
     en la Tm) redujo el embudo de entrada de 44 a 16 candidatos.
     """
     res = rank(_real_candidates())
-    assert res["n_eligible"] == 3
-    assert res["n_rejected"] == 13
+    assert res["n_eligible"] == 12
+    assert res["n_rejected"] == 66
 
 
 def test_datos_reales_el_frente_son_dos():
@@ -211,38 +211,37 @@ def test_datos_reales_el_frente_son_dos():
     esperable por azar (ver el hallazgo STAT-8 del panel de revisión).
     """
     res = rank(_real_candidates())
-    assert res["front"] == ["cand_5992", "cand_5998"]
+    assert res["front"] == ["cand_5882", "cand_5992", "cand_5998"]
 
 
-def test_cada_uno_del_frente_gana_en_algo_distinto():
+def test_cada_uno_del_frente_gana_en_una_dimension_distinta():
     """Es lo que hace interpretable al frente: no son empatados, son trade-offs."""
     res = rank(_real_candidates())
     front = {c.name: c.objectives for c in res["candidates"] if c.in_front}
-    assert len(front) == 2
-    # Ninguno domina al otro: cada uno gana al menos una dimensión.
-    a, b = front["cand_5992"], front["cand_5998"]
-    gana_a = sum(1 for d in ("block_strength", "offtarget_safety", "thermo_quality")
-                 if getattr(a, d) > getattr(b, d))
-    gana_b = sum(1 for d in ("block_strength", "offtarget_safety", "thermo_quality")
-                 if getattr(b, d) > getattr(a, d))
-    assert gana_a >= 1 and gana_b >= 1
+    assert set(front) == {"cand_5882", "cand_5992", "cand_5998"}
+    assert max(front, key=lambda n: front[n].block_strength) == "cand_5992"
+    assert max(front, key=lambda n: front[n].thermo_quality) == "cand_5882"
 
 
-def test_los_tres_elegibles_cubren_el_donador():
-    """Tras corregir CRIT-4 ya no hay candidatos de 'solo aceptor'.
+def test_los_que_anulan_solo_el_aceptor_estan_entre_los_elegibles():
+    """Tras el ADR 0014 (Tm anota, no filtra) esta clase vuelve a ser visible.
 
-    Los 7 que anulaban el aceptor sin cubrirlo -- el hallazgo que motivó el
-    ADR 0012 -- eran producto del filtro termodinámico con la hebra invertida.
-    Ninguno sobrevive al cálculo correcto.
+    Con el gate de Tm activo ninguno pasaba: su Tm de proxy es 36-40 °C. Es la
+    justificación retrospectiva de haber convertido el filtro en anotación.
     """
     res = rank(_real_candidates())
-    assert {c.name for c in res["candidates"]} == {"cand_5992", "cand_5998", "cand_5999"}
+    nombres = {c.name for c in res["candidates"]}
+    # Los 3 que cubren el donador siguen estando...
+    assert {"cand_5992", "cand_5998", "cand_5999"} <= nombres
+    # ...y ahora también la familia que ataca el tracto de polipirimidina.
+    assert {"cand_5877", "cand_5882", "cand_5883"} <= nombres
+    assert len(nombres) == 12
 
 
 def test_sensibilidad_el_colapso_termico_es_lo_que_discrimina():
     """Sin colapsar los dos percentiles, el frente pasa de 3 a 9 de 10: deja de
     informar. Esta es la justificación medida de esa convención."""
     s = rank(_real_candidates())["sensitivity"]
-    assert s["n_front_3d"] == 2
-    assert s["n_front_4d"] == 3
+    assert s["n_front_3d"] == 3
+    assert s["n_front_4d"] == 11
     assert s["n_front_4d"] > s["n_front_3d"]

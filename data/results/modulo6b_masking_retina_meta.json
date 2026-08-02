@@ -57,18 +57,111 @@
  ],
  "block_retention": 0.25,
  "canonical_safe_retention": 0.8,
- "n_candidates": 16,
+ "n_candidates": 78,
  "distribution_donor_only": {
-  "bloquea": 3,
-  "sin_efecto": 8,
-  "contraproducente": 5
+  "bloquea": 8,
+  "sin_efecto": 58,
+  "contraproducente": 12
  },
  "distribution": {
-  "anula_pseudoexon": 3,
-  "sin_efecto": 13,
+  "anula_pseudoexon": 11,
+  "sin_efecto": 67,
   "daña_canonico": 0
  },
  "useful_candidates": [
+  {
+   "name": "cand_5876",
+   "start_rel": -124,
+   "end_rel": -104,
+   "borders": [
+    "donador",
+    "aceptor"
+   ],
+   "retention_donor": 0.2301,
+   "retention_acceptor": 0.1065,
+   "retention_canonical": 0.9882
+  },
+  {
+   "name": "cand_5877",
+   "start_rel": -123,
+   "end_rel": -103,
+   "borders": [
+    "aceptor"
+   ],
+   "retention_donor": 0.2557,
+   "retention_acceptor": 0.1595,
+   "retention_canonical": 0.9896
+  },
+  {
+   "name": "cand_5878",
+   "start_rel": -122,
+   "end_rel": -102,
+   "borders": [
+    "aceptor"
+   ],
+   "retention_donor": 0.2504,
+   "retention_acceptor": 0.0892,
+   "retention_canonical": 0.9889
+  },
+  {
+   "name": "cand_5879",
+   "start_rel": -121,
+   "end_rel": -101,
+   "borders": [
+    "donador",
+    "aceptor"
+   ],
+   "retention_donor": 0.1809,
+   "retention_acceptor": 0.0317,
+   "retention_canonical": 0.9877
+  },
+  {
+   "name": "cand_5880",
+   "start_rel": -120,
+   "end_rel": -100,
+   "borders": [
+    "donador",
+    "aceptor"
+   ],
+   "retention_donor": 0.164,
+   "retention_acceptor": 0.0406,
+   "retention_canonical": 0.9878
+  },
+  {
+   "name": "cand_5881",
+   "start_rel": -119,
+   "end_rel": -99,
+   "borders": [
+    "donador",
+    "aceptor"
+   ],
+   "retention_donor": 0.1643,
+   "retention_acceptor": 0.0638,
+   "retention_canonical": 0.9888
+  },
+  {
+   "name": "cand_5882",
+   "start_rel": -118,
+   "end_rel": -98,
+   "borders": [
+    "donador",
+    "aceptor"
+   ],
+   "retention_donor": 0.1809,
+   "retention_acceptor": 0.0092,
+   "retention_canonical": 0.9845
+  },
+  {
+   "name": "cand_5883",
+   "start_rel": -117,
+   "end_rel": -97,
+   "borders": [
+    "aceptor"
+   ],
+   "retention_donor": 0.3065,
+   "retention_acceptor": 0.0134,
+   "retention_canonical": 0.9885
+  },
   {
    "name": "cand_5992",
    "start_rel": -8,
