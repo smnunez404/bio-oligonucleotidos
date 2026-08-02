@@ -57,18 +57,95 @@
  ],
  "block_retention": 0.25,
  "canonical_safe_retention": 0.8,
- "n_candidates": 16,
+ "n_candidates": 44,
  "distribution_donor_only": {
   "bloquea": 3,
-  "sin_efecto": 5,
-  "contraproducente": 8
+  "sin_efecto": 31,
+  "contraproducente": 10
  },
  "distribution": {
-  "anula_pseudoexon": 3,
-  "sin_efecto": 13,
+  "anula_pseudoexon": 10,
+  "sin_efecto": 34,
   "daña_canonico": 0
  },
  "useful_candidates": [
+  {
+   "name": "cand_5877",
+   "start_rel": -123,
+   "end_rel": -103,
+   "borders": [
+    "aceptor"
+   ],
+   "retention_donor": 0.5375,
+   "retention_acceptor": 0.0769,
+   "retention_canonical": 1.0005
+  },
+  {
+   "name": "cand_5878",
+   "start_rel": -122,
+   "end_rel": -102,
+   "borders": [
+    "aceptor"
+   ],
+   "retention_donor": 0.5288,
+   "retention_acceptor": 0.045,
+   "retention_canonical": 1.0007
+  },
+  {
+   "name": "cand_5879",
+   "start_rel": -121,
+   "end_rel": -101,
+   "borders": [
+    "aceptor"
+   ],
+   "retention_donor": 0.5214,
+   "retention_acceptor": 0.0123,
+   "retention_canonical": 1.0004
+  },
+  {
+   "name": "cand_5880",
+   "start_rel": -120,
+   "end_rel": -100,
+   "borders": [
+    "aceptor"
+   ],
+   "retention_donor": 0.5014,
+   "retention_acceptor": 0.0211,
+   "retention_canonical": 1.0007
+  },
+  {
+   "name": "cand_5881",
+   "start_rel": -119,
+   "end_rel": -99,
+   "borders": [
+    "aceptor"
+   ],
+   "retention_donor": 0.4581,
+   "retention_acceptor": 0.0362,
+   "retention_canonical": 1.0008
+  },
+  {
+   "name": "cand_5882",
+   "start_rel": -118,
+   "end_rel": -98,
+   "borders": [
+    "aceptor"
+   ],
+   "retention_donor": 0.5323,
+   "retention_acceptor": 0.009,
+   "retention_canonical": 1.0004
+  },
+  {
+   "name": "cand_5883",
+   "start_rel": -117,
+   "end_rel": -97,
+   "borders": [
+    "aceptor"
+   ],
+   "retention_donor": 0.5893,
+   "retention_acceptor": 0.0163,
+   "retention_canonical": 1.0004
+  },
   {
    "name": "cand_5992",
    "start_rel": -8,

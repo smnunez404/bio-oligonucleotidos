@@ -122,17 +122,14 @@ def _assign_percentiles(results: list["ThermoResult"]) -> None:
 
 
 def tm_rna_oriented(candidate: OligoCandidate) -> float:
-    """Tm con la orientación que documenta Biopython (la hebra de ARN).
+    """Tm con la orientación que documenta Biopython: la hebra de **ARN**.
 
-    Es la versión CORRECTA de lo que hoy calcula `analyze_candidate`. No está
-    cableada al pipeline a propósito: activarla cambia el conjunto de candidatos
-    de entrada de todos los módulos siguientes. Ver el comentario de CRIT-4.
+    `R_DNA_NN1` es una tabla de híbrido ARN/ADN y es asimétrica, así que pasarle
+    el ASO en vez de la diana calcula el dúplex invertido. Esta función es la que
+    usa `analyze_candidate` desde la corrección de CRIT-4 (2026-08-01).
 
-    Para activarla hay que reemplazar en `analyze_candidate`:
-        tm = mt.Tm_NN(aso, nn_table=mt.R_DNA_NN1)
-    por:
-        tm = tm_rna_oriented(candidate)
-    y regenerar todos los resultados de `data/results/`.
+    Sigue siendo un **proxy**: no hay tablas nearest-neighbor publicadas para
+    esqueleto neutro (PMO). Bien orientado, pero de otra química.
     """
     return mt.Tm_NN(_to_rna(candidate.target_window), nn_table=mt.R_DNA_NN1)
 
@@ -148,33 +145,23 @@ def analyze_candidate(
 
     # 1. Tm del dúplex ASO:ARN (proxy híbrido ARN/ADN — ver limitación arriba).
     #
-    # ⚠️ BUG CONOCIDO Y NO CORREGIDO — CRIT-4 de la revisión adversarial.
-    #
-    # Biopython documenta, para `R_DNA_NN1`: "For RNA/DNA hybridizations seq must
-    # be the RNA sequence". Acá se pasa `aso` (la hebra ASO), teniendo
-    # `target_rna` ya calculada dos líneas más arriba. La tabla es ASIMÉTRICA
+    # ORIENTACIÓN DE HEBRA: Biopython documenta, para `R_DNA_NN1`, que "For
+    # RNA/DNA hybridizations seq must be the RNA sequence". Por eso se pasa la
+    # DIANA (`target_window`, que es ARNm), no el ASO. La tabla es asimétrica
     # (AA/TT = (-7.8, -21.9) vs TT/AA = (-11.5, -36.4)), así que el orden cambia
-    # el número: no es una diferencia cosmética.
+    # el número: no es cosmético.
     #
-    # IMPACTO MEDIDO (verificado el 2026-08-01): usar `target_rna` en vez de
-    # `aso` mueve el embudo del Módulo 4 de **44 a 16 candidatos**, con solo 6 en
-    # común. `cand_5882` -- uno de los 3 del frente de Pareto final -- pasa de
-    # 51,40 °C a 37,98 °C y quedaría fuera de rango.
+    # Hasta el 2026-08-01 acá se pasaba `aso`, lo que calculaba el dúplex
+    # invertido — era CRIT-4 de la revisión adversarial. Corregirlo movió el
+    # embudo del Módulo 4 de 44 a 16 candidatos, con solo 6 en común. Los
+    # resultados anteriores quedaron en `data/results/pre-crit4-fix/`.
     #
-    # POR QUÉ NO SE CORRIGIÓ TODAVÍA: corregirlo no es voltear un argumento, es
-    # rehacer el análisis completo (módulos 5, 6b, 6c y 7 corren sobre otro
-    # conjunto de entrada). Y hay una pregunta previa sin resolver: este gate
-    # absoluto de 50-65 °C descansa sobre DOS supuestos que no aplican a un PMO
-    # -- no hay tablas nearest-neighbor para esqueleto neutro, y la corrección
-    # salina de Biopython supone un esqueleto cargado. Antes de rehacer el
-    # análisis hay que decidir si el gate debe existir para esta química o si Tm
-    # debe pasar a percentil relativo, como ya se hizo con accesibilidad y
-    # homodímero. Esa decisión es de los autores, no del código.
-    #
-    # `tm_rna_oriented()` de abajo implementa la versión correcta; el test
-    # `test_crit4_bug_de_orientacion_sigue_presente_y_medido` fija el impacto
-    # para que no se pierda de vista.
-    tm = mt.Tm_NN(aso, nn_table=mt.R_DNA_NN1)
+    # ATENCIÓN, LIMITACIÓN QUE ESTO NO RESUELVE: el gate absoluto de 50-65 °C
+    # sigue descansando sobre dos supuestos que NO aplican a un PMO — no existen
+    # tablas nearest-neighbor para esqueleto neutro, y la corrección salina de
+    # Biopython supone un esqueleto cargado. Ahora el cálculo está bien
+    # orientado, pero sigue siendo el proxy de otra química.
+    tm = tm_rna_oriented(candidate)
 
     # 2. Hibridación ASO:diana.
     dg_hybridization = RNA.duplexfold(aso_rna, target_rna).energy

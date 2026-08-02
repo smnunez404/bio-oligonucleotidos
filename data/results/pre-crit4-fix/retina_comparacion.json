@@ -1,0 +1,138 @@
+{
+  "nota": "Los nombres de sitio derivan de la geometría real de la región (ver pipeline/run_site_comparison.py). El archivo anterior tenía e2 y e3 cruzados -- CRIT-6 de la revisión adversarial.",
+  "sitios": {
+    "donador_canonico_fin_exon2": {
+      "offset_rel": -999,
+      "tipo": "donador"
+    },
+    "aceptor_canonico_inicio_exon3": {
+      "offset_rel": 395,
+      "tipo": "aceptor"
+    },
+    "donador_canonico_fin_exon3": {
+      "offset_rel": 536,
+      "tipo": "donador"
+    },
+    "donador_criptico": {
+      "offset_rel": 1,
+      "tipo": "donador"
+    },
+    "aceptor_criptico": {
+      "offset_rel": -89,
+      "tipo": "aceptor"
+    }
+  },
+  "pesos": {
+    "spliceai": {
+      "donador_canonico_fin_exon2": {
+        "offset_rel": -999,
+        "tipo": "donador",
+        "wt": 0.9856,
+        "mut": 0.9852,
+        "delta": -0.0004
+      },
+      "aceptor_canonico_inicio_exon3": {
+        "offset_rel": 395,
+        "tipo": "aceptor",
+        "wt": 0.9968,
+        "mut": 0.9971,
+        "delta": 0.0003
+      },
+      "donador_canonico_fin_exon3": {
+        "offset_rel": 536,
+        "tipo": "donador",
+        "wt": 0.9906,
+        "mut": 0.9893,
+        "delta": -0.0014
+      },
+      "donador_criptico": {
+        "offset_rel": 1,
+        "tipo": "donador",
+        "wt": 0.1939,
+        "mut": 0.5595,
+        "delta": 0.3656
+      },
+      "aceptor_criptico": {
+        "offset_rel": -89,
+        "tipo": "aceptor",
+        "wt": 0.0605,
+        "mut": 0.2709,
+        "delta": 0.2104
+      }
+    },
+    "retina": {
+      "donador_canonico_fin_exon2": {
+        "offset_rel": -999,
+        "tipo": "donador",
+        "wt": 0.7457,
+        "mut": 0.7552,
+        "delta": 0.0095
+      },
+      "aceptor_canonico_inicio_exon3": {
+        "offset_rel": 395,
+        "tipo": "aceptor",
+        "wt": 0.8726,
+        "mut": 0.8958,
+        "delta": 0.0232
+      },
+      "donador_canonico_fin_exon3": {
+        "offset_rel": 536,
+        "tipo": "donador",
+        "wt": 0.9363,
+        "mut": 0.9365,
+        "delta": 0.0002
+      },
+      "donador_criptico": {
+        "offset_rel": 1,
+        "tipo": "donador",
+        "wt": 0.031,
+        "mut": 0.2448,
+        "delta": 0.2138
+      },
+      "aceptor_criptico": {
+        "offset_rel": -89,
+        "tipo": "aceptor",
+        "wt": 0.0111,
+        "mut": 0.1451,
+        "delta": 0.134
+      }
+    },
+    "gtex": {
+      "donador_canonico_fin_exon2": {
+        "offset_rel": -999,
+        "tipo": "donador",
+        "wt": 0.9941,
+        "mut": 0.9934,
+        "delta": -0.0008
+      },
+      "aceptor_canonico_inicio_exon3": {
+        "offset_rel": 395,
+        "tipo": "aceptor",
+        "wt": 0.9953,
+        "mut": 0.9954,
+        "delta": 0.0001
+      },
+      "donador_canonico_fin_exon3": {
+        "offset_rel": 536,
+        "tipo": "donador",
+        "wt": 0.996,
+        "mut": 0.9958,
+        "delta": -0.0002
+      },
+      "donador_criptico": {
+        "offset_rel": 1,
+        "tipo": "donador",
+        "wt": 0.3722,
+        "mut": 0.7084,
+        "delta": 0.3362
+      },
+      "aceptor_criptico": {
+        "offset_rel": -89,
+        "tipo": "aceptor",
+        "wt": 0.0745,
+        "mut": 0.3023,
+        "delta": 0.2278
+      }
+    }
+  }
+}

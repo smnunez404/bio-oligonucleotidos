@@ -1,0 +1,261 @@
+{
+  "baseline": 0.9717966318130493,
+  "aons": {
+    "AON1": {
+      "score": 0.9771,
+      "delta": 0.0053,
+      "retencion": 1.0055,
+      "start_rel": -90,
+      "end_rel": -68,
+      "largo": 22
+    },
+    "AON2": {
+      "score": 0.9752,
+      "delta": 0.0034,
+      "retencion": 1.0035,
+      "start_rel": -68,
+      "end_rel": -46,
+      "largo": 22
+    },
+    "AON3": {
+      "score": 0.9592,
+      "delta": -0.0126,
+      "retencion": 0.9871,
+      "start_rel": -46,
+      "end_rel": -24,
+      "largo": 22
+    },
+    "AON4": {
+      "score": 0.7711,
+      "delta": -0.2007,
+      "retencion": 0.7934,
+      "start_rel": -24,
+      "end_rel": -3,
+      "largo": 21
+    },
+    "AON5": {
+      "score": 0.0,
+      "delta": -0.9718,
+      "retencion": 0.0,
+      "start_rel": -3,
+      "end_rel": 15,
+      "largo": 18
+    },
+    "AON6": {
+      "score": 0.0,
+      "delta": -0.9718,
+      "retencion": 0.0,
+      "start_rel": 4,
+      "end_rel": 25,
+      "largo": 21
+    },
+    "AON7": {
+      "score": 0.1271,
+      "delta": -0.8447,
+      "retencion": 0.1308,
+      "start_rel": 29,
+      "end_rel": 50,
+      "largo": 21
+    },
+    "AON8": {
+      "score": 0.9508,
+      "delta": -0.021,
+      "retencion": 0.9784,
+      "start_rel": 54,
+      "end_rel": 75,
+      "largo": 21
+    },
+    "AON9": {
+      "score": 0.8844,
+      "delta": -0.0874,
+      "retencion": 0.91,
+      "start_rel": 77,
+      "end_rel": 98,
+      "largo": 21
+    },
+    "AON10": {
+      "score": 0.8379,
+      "delta": -0.1339,
+      "retencion": 0.8623,
+      "start_rel": 114,
+      "end_rel": 134,
+      "largo": 20
+    },
+    "AON11": {
+      "score": 0.8814,
+      "delta": -0.0904,
+      "retencion": 0.907,
+      "start_rel": 128,
+      "end_rel": 150,
+      "largo": 22
+    },
+    "AON12": {
+      "score": 0.9623,
+      "delta": -0.0095,
+      "retencion": 0.9902,
+      "start_rel": 150,
+      "end_rel": 173,
+      "largo": 23
+    },
+    "AON13": {
+      "score": 0.9765,
+      "delta": 0.0047,
+      "retencion": 1.0048,
+      "start_rel": 173,
+      "end_rel": 193,
+      "largo": 20
+    },
+    "AON14": {
+      "score": 0.9365,
+      "delta": -0.0353,
+      "retencion": 0.9637,
+      "start_rel": 181,
+      "end_rel": 204,
+      "largo": 23
+    },
+    "AON15": {
+      "score": 0.9667,
+      "delta": -0.0051,
+      "retencion": 0.9948,
+      "start_rel": 212,
+      "end_rel": 234,
+      "largo": 22
+    },
+    "AON16": {
+      "score": 0.9731,
+      "delta": 0.0013,
+      "retencion": 1.0013,
+      "start_rel": 199,
+      "end_rel": 222,
+      "largo": 23
+    },
+    "AON17": {
+      "score": 0.9771,
+      "delta": 0.0053,
+      "retencion": 1.0055,
+      "start_rel": -82,
+      "end_rel": -59,
+      "largo": 23
+    },
+    "AON18": {
+      "score": 0.9806,
+      "delta": 0.0088,
+      "retencion": 1.009,
+      "start_rel": -74,
+      "end_rel": -51,
+      "largo": 23
+    },
+    "AON20": {
+      "score": 0.9769,
+      "delta": 0.0051,
+      "retencion": 1.0052,
+      "start_rel": -58,
+      "end_rel": -36,
+      "largo": 22
+    },
+    "AON21": {
+      "score": 0.9595,
+      "delta": -0.0123,
+      "retencion": 0.9874,
+      "start_rel": -51,
+      "end_rel": -29,
+      "largo": 22
+    },
+    "AON23": {
+      "score": 0.6674,
+      "delta": -0.3044,
+      "retencion": 0.6868,
+      "start_rel": -20,
+      "end_rel": 4,
+      "largo": 24
+    },
+    "AON24": {
+      "score": 0.0,
+      "delta": -0.9718,
+      "retencion": 0.0,
+      "start_rel": -8,
+      "end_rel": 17,
+      "largo": 25
+    },
+    "AON25": {
+      "score": 0.0,
+      "delta": -0.9718,
+      "retencion": 0.0,
+      "start_rel": 5,
+      "end_rel": 28,
+      "largo": 23
+    },
+    "AON26": {
+      "score": 0.8371,
+      "delta": -0.1347,
+      "retencion": 0.8614,
+      "start_rel": 37,
+      "end_rel": 60,
+      "largo": 23
+    },
+    "AON27": {
+      "score": 0.918,
+      "delta": -0.0538,
+      "retencion": 0.9446,
+      "start_rel": 61,
+      "end_rel": 84,
+      "largo": 23
+    },
+    "AON28": {
+      "score": 0.8845,
+      "delta": -0.0873,
+      "retencion": 0.9101,
+      "start_rel": 85,
+      "end_rel": 108,
+      "largo": 23
+    },
+    "AON29": {
+      "score": 0.8958,
+      "delta": -0.076,
+      "retencion": 0.9218,
+      "start_rel": 119,
+      "end_rel": 143,
+      "largo": 24
+    },
+    "AON31": {
+      "score": 0.9864,
+      "delta": 0.0146,
+      "retencion": 1.015,
+      "start_rel": 139,
+      "end_rel": 162,
+      "largo": 23
+    },
+    "AON32": {
+      "score": 0.9791,
+      "delta": 0.0073,
+      "retencion": 1.0076,
+      "start_rel": 145,
+      "end_rel": 169,
+      "largo": 24
+    },
+    "AON44": {
+      "score": 0.9806,
+      "delta": 0.0088,
+      "retencion": 1.009,
+      "start_rel": 145,
+      "end_rel": 163,
+      "largo": 18
+    },
+    "AON59": {
+      "score": 0.979,
+      "delta": 0.0072,
+      "retencion": 1.0074,
+      "start_rel": 145,
+      "end_rel": 161,
+      "largo": 16
+    },
+    "AON60": {
+      "score": 0.9792,
+      "delta": 0.0074,
+      "retencion": 1.0076,
+      "start_rel": 145,
+      "end_rel": 162,
+      "largo": 17
+    }
+  }
+}
